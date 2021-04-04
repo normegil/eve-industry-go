@@ -48,13 +48,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - id: artefact-name
+        if: ${{ matrix.goos != 'windows' }}
         run: echo "::set-output name=artefact-name::eve-industry-${{ matrix.goos }}-${{ matrix.goarch }}"
+      - id: artefact-name
+        if: ${{ matrix.goos == 'windows' }}
+        run: echo "::set-output name=artefact-name::eve-industry-${{ matrix.goos }}-${{ matrix.goarch }}".exe
       - run: go build -o ${{ steps.artefact-name.outputs.artefact-name }} ./...
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
       - uses: actions/upload-artifact@v2
-        if: ${{ matrix.goos != 'windows' }}
         with:
           name: ${{ steps.artefact-name.outputs.artefact-name }}
           path: ${{ steps.artefact-name.outputs.artefact-name }}
