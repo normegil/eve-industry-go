@@ -13,10 +13,25 @@ jobs:
           version: v1.39
   test:
     runs-on: ubuntu-latest
-    needs: lint
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
         with:
           go-version: '^1.16.3'
       - run: go test ./...
+  build:
+    runs-on: ubuntu-latest
+    needs:
+      - lint
+      - test
+    strategy:
+      matrix:
+        goos: [ linux, windows, darwin ]
+        goarch: [ 386, amd64, arm, arm64 ]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: go build -o eve-industry ./...
+        if: ${{ matrix.goos != 'windows' || matrix.goarch != 'arm64' }}
+        env:
+          GOOS:
+          GOARCH:
