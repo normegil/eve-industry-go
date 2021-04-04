@@ -63,4 +63,4 @@ jobs:
       - build
     steps:
       - uses: actions/download-artifact@v2
-      - run: ls
+      - run: ls -la
