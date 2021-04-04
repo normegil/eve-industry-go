@@ -68,6 +68,9 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: eve-industry-linux-${{ matrix.goarch }}
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '^1.16.3'
       - run: go test --tags=acceptance ./...
         env:
           EXECUTABLE_PATH: eve-industry-linux-${{ matrix.goarch }}.exe
@@ -82,6 +85,9 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: eve-industry-windows-${{ matrix.goarch }}.exe
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '^1.16.3'
       - run: go test --tags=acceptance ./...
         env:
           EXECUTABLE_PATH: eve-industry-windows-${{ matrix.goarch }}.exe
