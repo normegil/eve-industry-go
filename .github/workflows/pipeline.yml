@@ -26,7 +26,7 @@ jobs:
       - test
     strategy:
       matrix:
-        goos: [ linux, windows, darwin ]
+        goos: [ linux, windows ]
         goarch: [ 386, amd64, arm, arm64 ]
     steps:
       - uses: actions/checkout@v2
