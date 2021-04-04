@@ -73,7 +73,7 @@ jobs:
           EXECUTABLE_PATH: eve-industry-linux-${{ matrix.goarch }}.exe
   acceptance-test-windows:
     runs-on: windows-latest
-    needs: build-linux
+    needs: build-windows
     strategy:
       matrix:
         goarch: [ amd64 ]
