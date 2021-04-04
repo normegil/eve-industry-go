@@ -33,5 +33,5 @@ jobs:
       - uses: go build -o eve-industry ./...
         if: ${{ matrix.goos != 'windows' || matrix.goarch != 'arm64' }}
         env:
-          GOOS:
-          GOARCH:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
