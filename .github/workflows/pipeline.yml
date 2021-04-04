@@ -71,6 +71,7 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: '^1.16.3'
+      - run: ls -la
       - run: go test --tags=acceptance ./...
         env:
           EXECUTABLE_PATH: ${{ github.workspace }}/eve-industry-linux-${{ matrix.goarch }}
@@ -79,7 +80,7 @@ jobs:
     needs: build-windows
     strategy:
       matrix:
-        goarch: [ amd64 ]
+        goarch: [ 386 ]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
@@ -90,7 +91,7 @@ jobs:
           go-version: '^1.16.3'
       - run: go test --tags=acceptance ./...
         env:
-          EXECUTABLE_PATH: ${{ github.workspace }}\\eve-industry-windows-${{ matrix.goarch }}.exe
+          EXECUTABLE_PATH: ${{ github.workspace }}\eve-industry-windows-${{ matrix.goarch }}.exe
   release:
     runs-on: ubuntu-latest
     needs:
