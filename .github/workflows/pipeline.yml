@@ -35,8 +35,8 @@ jobs:
           GOARCH: ${{ matrix.goarch }}
       - uses: actions/upload-artifact@v2
         with:
-          name: eve-industry-linux-${{ matrix.goarch }}.exe
-          path: eve-industry-linux-${{ matrix.goarch }}.exe
+          name: eve-industry-linux-${{ matrix.goarch }}
+          path: eve-industry-linux-${{ matrix.goarch }}
           retention-days: 2
   build-windows:
     runs-on: ubuntu-latest
@@ -48,7 +48,7 @@ jobs:
         goarch: [ 386, amd64 ]
     steps:
       - uses: actions/checkout@v2
-      - run: go build -o eve-industry-linux-${{ matrix.goarch }} ./...
+      - run: go build -o eve-industry-windows-${{ matrix.goarch }} ./...
         env:
           GOOS: linux
           GOARCH: ${{ matrix.goarch }}
