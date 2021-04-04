@@ -71,7 +71,7 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: '^1.16.3'
-      - run: ls -la
+      - run: chmod +X eve-industry-linux-${{ matrix.goarch }}
       - run: go test --tags=acceptance ./...
         env:
           EXECUTABLE_PATH: ${{ github.workspace }}/eve-industry-linux-${{ matrix.goarch }}
