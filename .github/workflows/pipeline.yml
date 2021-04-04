@@ -48,7 +48,7 @@ jobs:
         goarch: [ 386, amd64 ]
     steps:
       - uses: actions/checkout@v2
-      - run: go build -o eve-industry-windows-${{ matrix.goarch }} ./...
+      - run: go build -o eve-industry-windows-${{ matrix.goarch }}.exe ./...
         env:
           GOOS: linux
           GOARCH: ${{ matrix.goarch }}
