@@ -57,3 +57,10 @@ jobs:
           name: eve-industry-${{ matrix.goos }}-${{ matrix.goarch }}
           path: eve-industry-${{ matrix.goos }}-${{ matrix.goarch }}
           retention-days: 5
+  release:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    steps:
+      - uses: actions/download-artifact@v2
+      - run: ls
