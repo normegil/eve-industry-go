@@ -47,27 +47,17 @@ jobs:
         goarch: ${{ fromJson(needs.load-build-infos.outputs.goarch) }}
     steps:
       - uses: actions/checkout@v2
-      - run: go build -o eve-industry-${{ matrix.goos }}-${{ matrix.goarch }} ./...
-        if: ${{ matrix.goos != 'windows' }}
-        env:
-          GOOS: ${{ matrix.goos }}
-          GOARCH: ${{ matrix.goarch }}
-      - run: go build -o eve-industry-${{ matrix.goos }}-${{ matrix.goarch }}.exe ./...
-        if: ${{ matrix.goos == 'windows' }}
+      - id: artefact-name
+        run: echo "::set-output name=artefact-name::eve-industry-${{ matrix.goos }}-${{ matrix.goarch }}"
+      - run: go build -o ${{ steps.artefact-name.outputs.artefact-name }} ./...
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
       - uses: actions/upload-artifact@v2
         if: ${{ matrix.goos != 'windows' }}
         with:
-          name: eve-industry-${{ matrix.goos }}-${{ matrix.goarch }}
-          path: eve-industry-${{ matrix.goos }}-${{ matrix.goarch }}
-          retention-days: 5
-      - uses: actions/upload-artifact@v2
-        if: ${{ matrix.goos == 'windows' }}
-        with:
-          name: eve-industry-${{ matrix.goos }}-${{ matrix.goarch }}.exe
-          path: eve-industry-${{ matrix.goos }}-${{ matrix.goarch }}.exe
+          name: ${{ steps.artefact-name.outputs.artefact-name }}
+          path: ${{ steps.artefact-name.outputs.artefact-name }}
           retention-days: 5
   release:
     runs-on: ubuntu-latest
