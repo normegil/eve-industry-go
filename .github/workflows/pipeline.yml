@@ -74,11 +74,12 @@ jobs:
     needs:
       - build
     steps:
+      - uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        with:
+          tag_name: latest
       - uses: actions/download-artifact@v2
       - uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          draft: true
-          prerelease: false
           automatic_release_tag: latest
           files: eve-industry-**/*
