@@ -48,7 +48,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: go build -o eve-industry-${{ matrix.goos }}-${{ matrix.goarch }} ./...
-        if: ${{ matrix.goos != 'windows' || matrix.goarch != 'arm64' }}
+        if: ${{ matrix.goos != 'windows' }}
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+      - run: go build -o eve-industry-${{ matrix.goos }}-${{ matrix.goarch }}.exe ./...
+        if: ${{ matrix.goos == 'windows' }}
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
@@ -63,4 +68,10 @@ jobs:
       - build
     steps:
       - uses: actions/download-artifact@v2
-      - run: ls -la
+      - uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          draft: true
+          prerelease: false
+          automatic_release_tag: latest
+          files: eve-industry-*
