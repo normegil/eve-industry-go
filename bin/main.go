@@ -1,12 +1,18 @@
 package main
 
-import "net/http"
+import (
+	"log"
+	"net/http"
+)
 
 func main() {
 	server := http.Server{
 		Addr: ":18080",
 		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte("Hello World !"))
+			_, err := w.Write([]byte("Hello World !"))
+			if err != nil {
+				log.Printf("error: %s", err.Error())
+			}
 		}),
 	}
 	if err := server.ListenAndServe(); nil != err {
