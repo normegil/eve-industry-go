@@ -29,6 +29,7 @@ jobs:
       goos: ${{ steps.set-goos.outputs.goos }}
       goarch: ${{ steps.set-goarch.outputs.goarch }}
     steps:
+      - uses: actions/checkout@v2
       - id: set-goos
         run: |
           TASKS=$(echo $(cat .github/workflows/goos.json) | sed 's/ //g' )
