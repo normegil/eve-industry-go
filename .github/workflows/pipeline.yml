@@ -58,9 +58,16 @@ jobs:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
       - uses: actions/upload-artifact@v2
+        if: ${{ matrix.goos != 'windows' }}
         with:
           name: eve-industry-${{ matrix.goos }}-${{ matrix.goarch }}
           path: eve-industry-${{ matrix.goos }}-${{ matrix.goarch }}
+          retention-days: 5
+      - uses: actions/upload-artifact@v2
+        if: ${{ matrix.goos == 'windows' }}
+        with:
+          name: eve-industry-${{ matrix.goos }}-${{ matrix.goarch }}.exe
+          path: eve-industry-${{ matrix.goos }}-${{ matrix.goarch }}.exe
           retention-days: 5
   release:
     runs-on: ubuntu-latest
@@ -74,4 +81,4 @@ jobs:
           draft: true
           prerelease: false
           automatic_release_tag: latest
-          files: eve-industry-*
+          files: eve-industry-**/*
