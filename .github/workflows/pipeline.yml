@@ -84,7 +84,9 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: docker-image-eve-industry
-          path: /tmp
+          path: /tmp/docker-image-eve-industry
+      - run: ls -la /tmp
+      - run: ls -la /tmp/docker-image-eve-industry/
       - run: docker load --input /tmp/docker-image-eve-industry
       - run: docker images ls -a
       - uses: actions/setup-go@v2
