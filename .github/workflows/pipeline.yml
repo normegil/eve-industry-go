@@ -85,7 +85,8 @@ jobs:
         with:
           name: docker-image-eve-industry
           path: /tmp
-      - run: docker load --input /tmp/docker-image-eve-industry.tar
+      #- run: docker load --input /tmp/docker-image-eve-industry.tar
+      - run: cat /tmp/docker-image-eve-industry.tar | docker import - eve-industry:testing
       - run: docker images ls -a
       - uses: actions/setup-go@v2
         with:
