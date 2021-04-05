@@ -9,11 +9,14 @@ import (
 	"os"
 	"os/exec"
 	"testing"
+	"time"
 )
 
 func TestHttpServer(t *testing.T) {
 	executablePath := os.Getenv("EXECUTABLE_PATH")
 	cmd := exec.Command(executablePath)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 	if err := cmd.Start(); nil != err {
 		t.Fatal(fmt.Errorf("Could not start command '%s': %w", executablePath, err))
 	}
@@ -29,9 +32,11 @@ func TestHttpServer(t *testing.T) {
 		}
 	}()
 
+	time.Sleep(500 * time.Millisecond)
+
 	resp, err := http.Get("http://localhost:18080")
 	if err != nil {
-		t.Error(fmt.Errorf("Querying server: %w", err))
+		t.Fatal(fmt.Errorf("Querying server: %w", err))
 	}
 	if http.StatusOK != resp.StatusCode {
 		t.Error(fmt.Errorf("Wrong status %d: %w", resp.StatusCode, err))
