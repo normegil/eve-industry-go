@@ -15,7 +15,7 @@ func main() {
 			}
 		}),
 	}
-	log.Printf("server listening: %+v", server)
+	log.Printf("server listening: %s", server.Addr)
 	if err := server.ListenAndServe(); nil != err {
 		panic(err)
 	}
