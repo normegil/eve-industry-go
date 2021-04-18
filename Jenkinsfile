@@ -1,9 +1,10 @@
 pipeline {
     agent { docker { image 'golang:1.16.3' } }
     stages {
-        stage('build') {
+        stage('lint') {
             steps {
-                sh 'go version'
+                sh 'setup-dev-env.sh'
+                sh 'bin/golangci-lint --version'
             }
         }
     }
