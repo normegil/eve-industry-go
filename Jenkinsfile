@@ -9,5 +9,10 @@ pipeline {
                 }
             }
         }
+        stage('test') {
+            steps {
+                sh 'go test ./...'
+            }
+        }
     }
 }
