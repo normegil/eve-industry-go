@@ -5,8 +5,7 @@ pipeline {
             steps {
                 sh './setup-dev-env.sh'
                 withEnv(["XDG_CACHE_HOME=/tmp/.cache"]) {
-                    sh 'env'
-                    sh 'bin/golangci-lint --version'
+                    sh 'bin/golangci-lint run'
                 }
             }
         }
