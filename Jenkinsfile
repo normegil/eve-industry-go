@@ -4,7 +4,9 @@ pipeline {
         stage('lint') {
             steps {
                 sh './setup-dev-env.sh'
-                sh 'bin/golangci-lint --version'
+                withEnv(["XDG_CONFIG_HOME=/tmp"]) {
+                    sh 'bin/golangci-lint --version'
+                }
             }
         }
     }
