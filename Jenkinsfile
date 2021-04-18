@@ -5,6 +5,7 @@ pipeline {
             steps {
                 sh './setup-dev-env.sh'
                 withEnv(["XDG_CONFIG_HOME=/tmp"]) {
+                    sh 'env'
                     sh 'bin/golangci-lint --version'
                 }
             }
