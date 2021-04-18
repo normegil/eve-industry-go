@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('lint') {
             steps {
-                sh 'setup-dev-env.sh'
+                sh './setup-dev-env.sh'
                 sh 'bin/golangci-lint --version'
             }
         }
