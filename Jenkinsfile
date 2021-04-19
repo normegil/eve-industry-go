@@ -1,3 +1,10 @@
+def linuxBuildTargets = [
+    "386",
+    "amd64",
+    "arm",
+    "arm64"
+]
+
 pipeline {
     agent { docker { image 'golang:1.16.3' } }
     environment {
@@ -6,15 +13,30 @@ pipeline {
     stages {
         stage('Validate code') {
             parallel {
-                stage('lint') {
+                stage('Lint') {
                     steps {
                         sh './setup-dev-env.sh'
                         sh 'bin/golangci-lint run'
                     }
                 }
-                stage('test') {
+                stage('Test') {
                     steps {
                         sh 'go test ./...'
+                    }
+                }
+            }
+        }
+        stage('Build code') {
+            parallel {
+                stage('Linux') {
+                    steps {
+                        script {
+                            linuxBuildTargets.each { target ->
+                                withEnv["GOOS=linux", "GOARCH=" + target] {
+                                    sh "go build -o eve-industry-linux-${target} ./..."
+                                }
+                            }
+                        }
                     }
                 }
             }
