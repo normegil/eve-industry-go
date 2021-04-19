@@ -12,7 +12,7 @@ def windowsBuildTargets = [
 
 pipeline {
     agent { docker { image 'golang:1.16.3' } }
-    tool {
+    tools {
         docker 'latest'
     }
     environment {
