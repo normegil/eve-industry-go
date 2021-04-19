@@ -30,7 +30,7 @@ pipeline {
             parallel {
                 stage('Linux') {
                     steps {
-                        script {
+                        parallel script {
                             linuxBuildTargets.each { target ->
                                 sh "GOOS=linux GOARCH=${target} go build -o eve-industry-linux-${target} ./..."
                             }
