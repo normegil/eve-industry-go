@@ -36,14 +36,14 @@ pipeline {
                 script {
                     def builds = [:]
                     linuxBuildTargets.each { target ->
-                        builds[target] = {
+                        builds["linux-"+target] = {
                             stage("Build Linux - ${target}") {
                                 sh "GOOS=linux GOARCH=${target} go build -o eve-industry-linux-${target} ./..."
                             }
                         }
                     }
                     windowsBuildTargets.each { target ->
-                        builds[target] = {
+                        builds["windows-"target] = {
                             stage("Build Windows - ${target}") {
                                 sh "GOOS=windows GOARCH=${target} go build -o eve-industry-linux-${target} ./..."
                             }
