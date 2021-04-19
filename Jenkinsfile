@@ -32,10 +32,7 @@ pipeline {
                     steps {
                         script {
                             linuxBuildTargets.each { target ->
-                                withEnv["GOOS=linux", "GOARCH=${target}"] {
-                                    sh "env"
-                                    sh "go build -o eve-industry-linux-${target} ./..."
-                                }
+                                sh "GOOS=linux GOARCH=${target} go build -o eve-industry-linux-${target} ./..."
                             }
                         }
                     }
