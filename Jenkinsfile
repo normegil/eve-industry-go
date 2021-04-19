@@ -17,15 +17,16 @@ pipeline {
     }
     stages {
         stage('Validate code') {
-            agent { docker { image 'golang:1.16.3' } }
             parallel {
                 stage('Lint') {
+                    agent { docker { image 'golang:1.16.3' } }
                     steps {
                         sh './setup-dev-env.sh'
                         sh 'bin/golangci-lint run'
                     }
                 }
                 stage('Test') {
+                    agent { docker { image 'golang:1.16.3' } }
                     steps {
                         sh 'go test ./...'
                     }
