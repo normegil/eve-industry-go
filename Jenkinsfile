@@ -11,12 +11,13 @@ def windowsBuildTargets = [
 ]
 
 pipeline {
-    agent { docker { image 'golang:1.16.3' } }
+    agent none
     environment {
         XDG_CACHE_HOME = '/tmp/.cache'
     }
     stages {
         stage('Validate code') {
+            agent { docker { image 'golang:1.16.3' } }
             parallel {
                 stage('Lint') {
                     steps {
@@ -32,6 +33,7 @@ pipeline {
             }
         }
         stage('Build code') {
+            agent { docker { image 'golang:1.16.3' } }
             steps {
                 script {
                     def builds = [:]
