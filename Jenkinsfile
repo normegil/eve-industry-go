@@ -38,18 +38,14 @@ pipeline {
                     linuxBuildTargets.each { target ->
                         builds[target] = {
                             stage("Build Linux - ${target}") {
-                                steps {
-                                    sh "GOOS=linux GOARCH=${target} go build -o eve-industry-linux-${target} ./..."
-                                }
+                                sh "GOOS=linux GOARCH=${target} go build -o eve-industry-linux-${target} ./..."
                             }
                         }
                     }
                     windowsBuildTargets.each { target ->
                         builds[target] = {
                             stage("Build Windows - ${target}") {
-                                steps {
-                                    sh "GOOS=windows GOARCH=${target} go build -o eve-industry-linux-${target} ./..."
-                                }
+                                sh "GOOS=windows GOARCH=${target} go build -o eve-industry-linux-${target} ./..."
                             }
                         }
                     }
