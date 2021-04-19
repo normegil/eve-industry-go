@@ -5,6 +5,11 @@ def linuxBuildTargets = [
     "arm64"
 ]
 
+def windowsBuildTargets = [
+    "386",
+    "amd64"
+]
+
 pipeline {
     agent { docker { image 'golang:1.16.3' } }
     environment {
@@ -27,16 +32,27 @@ pipeline {
             }
         }
         stage('Build code') {
-            parallel {
-                stage('Linux') {
-                    steps {
-                        parallel script {
-                            linuxBuildTargets.each { target ->
+            script {
+                def builds = [:]
+                linuxBuildTargets.each { target ->
+                    builds[target] = {
+                        stage("Build Linux - ${target}") {
+                            steps {
                                 sh "GOOS=linux GOARCH=${target} go build -o eve-industry-linux-${target} ./..."
                             }
                         }
                     }
                 }
+                windowsBuildTargets.each { target ->
+                    builds[target] = {
+                        stage("Build Windows - ${target}") {
+                            steps {
+                                sh "GOOS=windows GOARCH=${target} go build -o eve-industry-linux-${target} ./..."
+                            }
+                        }
+                    }
+                }
+                parallel builds
             }
         }
     }
