@@ -12,9 +12,6 @@ def windowsBuildTargets = [
 
 pipeline {
     agent { docker { image 'golang:1.16.3' } }
-    tools {
-        dockerTool 'latest'
-    }
     environment {
         XDG_CACHE_HOME = '/tmp/.cache'
     }
@@ -48,7 +45,7 @@ pipeline {
                     windowsBuildTargets.each { target ->
                         builds["windows-"+target] = {
                             stage("Build Windows - ${target}") {
-                                sh "GOOS=windows GOARCH=${target} go build -o eve-industry-linux-${target} ./..."
+                                sh "GOOS=windows GOARCH=${target} go build -o eve-industry-windows-${target} ./..."
                             }
                         }
                     }
@@ -57,6 +54,7 @@ pipeline {
             }
         }
         stage('Build docker image') {
+            agent any
             steps {
                 script {
                     def img = docker.build("eve-industry:${env.BUILD_ID}")
