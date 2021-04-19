@@ -53,5 +53,13 @@ pipeline {
                 }
             }
         }
+        stage('Build docker image') {
+            steps {
+                script {
+                    def img = docker.build("eve-industry:${env.BUILD_ID}")
+                    img.push('latest')
+                }
+            }
+        }
     }
 }
