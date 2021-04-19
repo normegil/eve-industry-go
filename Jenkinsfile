@@ -12,6 +12,9 @@ def windowsBuildTargets = [
 
 pipeline {
     agent { docker { image 'golang:1.16.3' } }
+    tool {
+        docker 'latest'
+    }
     environment {
         XDG_CACHE_HOME = '/tmp/.cache'
     }
