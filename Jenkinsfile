@@ -43,7 +43,7 @@ pipeline {
                         }
                     }
                     windowsBuildTargets.each { target ->
-                        builds["windows-"target] = {
+                        builds["windows-"+target] = {
                             stage("Build Windows - ${target}") {
                                 sh "GOOS=windows GOARCH=${target} go build -o eve-industry-linux-${target} ./..."
                             }
