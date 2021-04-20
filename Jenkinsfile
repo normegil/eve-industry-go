@@ -10,6 +10,8 @@ def windowsBuildTargets = [
     "amd64"
 ]
 
+def builtImage
+
 pipeline {
     agent none
     environment {
@@ -60,9 +62,14 @@ pipeline {
             agent any
             steps {
                 script {
-                    def img = docker.build("eve-industry:${env.BUILD_ID}")
+                    builtImage = docker.build("eve-industry:${env.BUILD_ID}")
                 }
             }
+        }
+    }
+    post {
+        always {
+            sh "docker rmi ${builtImage.id}"
         }
     }
 }
