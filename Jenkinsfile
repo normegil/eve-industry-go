@@ -77,7 +77,7 @@ pipeline {
             }
             steps {
                 script {
-                    builtImage.withRun {
+                    builtImage.withRun('-p 18080:18080') {
                         sh 'go test --tags=acceptance ./...'
                     }
                 }
