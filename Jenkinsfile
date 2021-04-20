@@ -68,6 +68,18 @@ pipeline {
                 }
             }
         }
+        stage('Build docker image') {
+            agent {
+                label 'docker-build'
+            }
+            steps {
+                script {
+                    builtImage.withRun {
+                        sh 'go test --tags=acceptance ./...'
+                    }
+                }
+            }
+        }
     }
     post {
         always {
