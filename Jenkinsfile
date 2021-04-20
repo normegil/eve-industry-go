@@ -68,7 +68,7 @@ pipeline {
                 }
             }
         }
-        stage('Build docker image') {
+        stage('Acceptance test') {
             agent {
                 label 'docker-build'
             }
