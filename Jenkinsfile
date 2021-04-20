@@ -72,6 +72,9 @@ pipeline {
             agent {
                 label 'docker-build'
             }
+            tools {
+                go '1.16.3'
+            }
             steps {
                 script {
                     builtImage.withRun {
