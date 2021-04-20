@@ -59,7 +59,9 @@ pipeline {
             }
         }
         stage('Build docker image') {
-            agent node('docker-build')
+            agent {
+                label 'docker-build'
+            }
             steps {
                 script {
                     builtImage = docker.build("eve-industry:${env.BUILD_ID}")
