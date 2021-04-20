@@ -59,7 +59,7 @@ pipeline {
             }
         }
         stage('Build docker image') {
-            agent any
+            agent node('docker-build')
             steps {
                 script {
                     builtImage = docker.build("eve-industry:${env.BUILD_ID}")
@@ -69,7 +69,7 @@ pipeline {
     }
     post {
         always {
-            node {
+            node('docker-build') {
                 sh "docker rmi ${builtImage.id}"
             }
         }
