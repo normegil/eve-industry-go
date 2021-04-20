@@ -69,7 +69,9 @@ pipeline {
     }
     post {
         always {
-            sh "docker rmi ${builtImage.id}"
+            node {
+                sh "docker rmi ${builtImage.id}"
+            }
         }
     }
 }
