@@ -97,8 +97,11 @@ pipeline {
                 label 'docker-build'
             }
             steps {
-                script {
-                    builtImage.push('latest')
+                withCredentials([usernamePassword(credentialsId: 'DockerHub', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                    script {
+                        sh "docker login -u ${USER} -p ${PASS}"
+                        builtImage.push('latest')
+                    }
                 }
             }
         }
