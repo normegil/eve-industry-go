@@ -83,6 +83,16 @@ pipeline {
                 }
             }
         }
+        stage('Publish artefacts') {
+            agent {
+                label 'docker-build'
+            }
+            steps {
+                script {
+                    builtImage.push('latest')
+                }
+            }
+        }
     }
     post {
         always {
