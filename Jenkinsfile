@@ -97,9 +97,8 @@ pipeline {
                 label 'docker-build'
             }
             steps {
-                withCredentials([usernamePassword(credentialsId: 'DockerHub', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-                    script {
-                        sh "docker login -u ${USER} -p ${PASS}"
+                script {
+                    docker.withRegistry("https://index.docker.io/v1/', 'DockerHub') {
                         builtImage.push('latest')
                     }
                 }
