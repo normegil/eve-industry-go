@@ -98,7 +98,9 @@ pipeline {
             }
             steps {
                 script {
-                    builtImage.push('latest')
+                    docker.withRegistry('https://index.docker.io/v2/', 'DockerHub') {
+                        builtImage.push('latest')
+                    }
                 }
             }
         }
