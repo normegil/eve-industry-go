@@ -73,7 +73,7 @@ pipeline {
             }
             steps {
                 script {
-                    builtImage = docker.build("eve-industry:${env.BUILD_ID}")
+                    builtImage = docker.build("normegil/eve-industry:${env.BUILD_ID}")
                 }
             }
         }
