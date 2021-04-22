@@ -93,13 +93,28 @@ pipeline {
             }
         }
         stage('Publish artefacts') {
-            agent {
-                label 'docker-build'
-            }
-            steps {
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', 'DockerHub') {
-                        builtImage.push('latest')
+            parallel {
+                stage('Publish docker') {
+                    agent {
+                        label 'docker-build'
+                    }
+                    steps {
+                        script {
+                            docker.withRegistry('https://index.docker.io/v1/', 'DockerHub') {
+                                builtImage.pu0sh('latest')
+                            }
+                        }
+                    }
+                }
+                stage('Publish binaries') {
+                    agent any
+                    steps {
+                        script {
+                            sh 'wget https://github.com/github-release/github-release/releases/download/v0.10.0/linux-amd64-github-release.bz2 -O bin/github-release.bz2'
+                            sh 'tar xf bin/github-release.bz2 -C bin/'
+
+                            sh 'bin/github-release --help'
+                        }
                     }
                 }
             }
