@@ -128,6 +128,7 @@ pipeline {
         always {
             node('docker-build') {
                 sh "docker rmi ${builtImage.id}"
+                cleanWs()
             }
         }
     }
