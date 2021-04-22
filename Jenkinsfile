@@ -113,7 +113,6 @@ pipeline {
                     }
                     steps {
                         script {
-                            sh 'mkdir bin'
                             sh 'wget https://github.com/github-release/github-release/releases/download/v0.10.0/linux-amd64-github-release.bz2 -O bin/github-release.bz2'
                             sh 'bzip2 -d bin/github-release.bz2'
 
