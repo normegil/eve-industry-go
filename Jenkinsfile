@@ -112,7 +112,7 @@ pipeline {
                         go '1.16.3'
                     }
                     steps {
-                        withCredentials([usernamePassword(credentialsId: 'GithubToken', passwordVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
+                        withCredentials([usernamePassword(credentialsId: 'GithubToken', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
                             script {
                                 sh 'wget https://github.com/github-release/github-release/releases/download/v0.10.0/linux-amd64-github-release.bz2 -O bin/github-release.bz2'
                                 sh 'bzip2 -d bin/github-release.bz2 || true'
