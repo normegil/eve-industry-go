@@ -118,12 +118,12 @@ pipeline {
                                 sh 'bzip2 -d bin/github-release.bz2 || true'
                                 sh 'chmod +x bin/github-release'
 
-                                sh 'bin/github-release delete --user ${GITHUB_USER} --repo eve-industry --tag latest || true'
-                                sh 'bin/github-release release --user ${GITHUB_USER} --repo eve-industry --tag latest --name latest'
+                                sh 'bin/github-release delete --user ${GITHUB_USER} --repo eve-industry-go --tag latest || true'
+                                sh 'bin/github-release release --user ${GITHUB_USER} --repo eve-industry-go --tag latest --name latest'
 
                                 files = findFiles(glob: 'eve-industry-*')
                                 files.each { file ->
-                                    sh "bin/github-release upload --user ${GITHUB_USER} --repo eve-industry --tag latest --name ${file} --file ${file}"
+                                    sh "bin/github-release upload --user ${GITHUB_USER} --repo eve-industry-go --tag latest --name ${file} --file ${file}"
                                 }
                             }
                         }
