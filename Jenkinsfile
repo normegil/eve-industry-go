@@ -60,8 +60,8 @@ pipeline {
                     windowsBuildTargets.each { target ->
                         builds["windows-"+target] = {
                             stage("Build Windows - ${target}") {
-                                sh "GOOS=windows GOARCH=${target} go build -o eve-industry-windows-${target} ./..."
-                                stash name: "eve-industry-windows-${target}", allowEmpty: false, includes: "eve-industry-windows-${target}"
+                                sh "GOOS=windows GOARCH=${target} go build -o eve-industry-windows-${target}.exe ./..."
+                                stash name: "eve-industry-windows-${target}", allowEmpty: false, includes: "eve-industry-windows-${target}.exe"
                             }
                         }
                     }
@@ -130,7 +130,7 @@ pipeline {
                                 }
                                 windowsBuildTargets.each { target ->
                                 unstash name: "eve-industry-windows-${target}"
-                                    sh "bin/github-release upload --user ${GITHUB_USER} --repo eve-industry-go --tag latest --name eve-industry-windows-386 --file eve-industry-windows-${target}"
+                                    sh "bin/github-release upload --user ${GITHUB_USER} --repo eve-industry-go --tag latest --name eve-industry-windows-${target}.exe --file eve-industry-windows-${target}.exe"
                                 }
                             }
                         }
