@@ -53,6 +53,7 @@ pipeline {
                         builds["linux-"+target] = {
                             stage("Build Linux - ${target}") {
                                 sh "GOOS=linux GOARCH=${target} go build -o eve-industry-linux-${target} ./..."
+                                stash name: "eve-industry-linux-${target}", allowEmpty: False, includes: "eve-industry-linux-${target}"
                             }
                         }
                     }
@@ -60,6 +61,7 @@ pipeline {
                         builds["windows-"+target] = {
                             stage("Build Windows - ${target}") {
                                 sh "GOOS=windows GOARCH=${target} go build -o eve-industry-windows-${target} ./..."
+                                stash name: "eve-industry-windows-${target}", allowEmpty: False, includes: "eve-industry-windows-${target}"
                             }
                         }
                     }
@@ -123,9 +125,11 @@ pipeline {
                                 sh 'bin/github-release delete --user ${GITHUB_USER} --repo eve-industry-go --tag latest || true'
                                 sh 'bin/github-release release --user ${GITHUB_USER} --repo eve-industry-go --tag latest --name latest'
                                 linuxBuildTargets.each { target ->
+                                    unstash name: "eve-industry-linux-${target}"
                                     sh "bin/github-release upload --user ${GITHUB_USER} --repo eve-industry-go --tag latest --name eve-industry-linux-${target} --file eve-industry-linux-${target}"
                                 }
                                 windowsBuildTargets.each { target ->
+                                unstash name: "eve-industry-windows-${target}"
                                     sh "bin/github-release upload --user ${GITHUB_USER} --repo eve-industry-go --tag latest --name eve-industry-windows-386 --file eve-industry-windows-${target}"
                                 }
                             }
