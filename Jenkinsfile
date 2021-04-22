@@ -53,7 +53,7 @@ pipeline {
                         builds["linux-"+target] = {
                             stage("Build Linux - ${target}") {
                                 sh "GOOS=linux GOARCH=${target} go build -o eve-industry-linux-${target} ./..."
-                                stash name: "eve-industry-linux-${target}", allowEmpty: False, includes: "eve-industry-linux-${target}"
+                                stash name: "eve-industry-linux-${target}", allowEmpty: false, includes: "eve-industry-linux-${target}"
                             }
                         }
                     }
@@ -61,7 +61,7 @@ pipeline {
                         builds["windows-"+target] = {
                             stage("Build Windows - ${target}") {
                                 sh "GOOS=windows GOARCH=${target} go build -o eve-industry-windows-${target} ./..."
-                                stash name: "eve-industry-windows-${target}", allowEmpty: False, includes: "eve-industry-windows-${target}"
+                                stash name: "eve-industry-windows-${target}", allowEmpty: false, includes: "eve-industry-windows-${target}"
                             }
                         }
                     }
