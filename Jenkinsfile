@@ -118,6 +118,8 @@ pipeline {
                                 sh 'bzip2 -d bin/github-release.bz2 || true'
                                 sh 'chmod +x bin/github-release'
 
+                                sh 'ls'
+
                                 sh 'bin/github-release delete --user ${GITHUB_USER} --repo eve-industry-go --tag latest || true'
                                 sh 'bin/github-release release --user ${GITHUB_USER} --repo eve-industry-go --tag latest --name latest'
                                 linuxBuildTargets.each { target ->
