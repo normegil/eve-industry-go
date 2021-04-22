@@ -120,10 +120,11 @@ pipeline {
 
                                 sh 'bin/github-release delete --user ${GITHUB_USER} --repo eve-industry-go --tag latest || true'
                                 sh 'bin/github-release release --user ${GITHUB_USER} --repo eve-industry-go --tag latest --name latest'
-
-                                files = findFiles(glob: 'eve-industry-*')
-                                files.each { file ->
-                                    sh "bin/github-release upload --user ${GITHUB_USER} --repo eve-industry-go --tag latest --name ${file} --file ${file}"
+                                linuxBuildTargets.each { target ->
+                                    sh "bin/github-release upload --user ${GITHUB_USER} --repo eve-industry-go --tag latest --name eve-industry-linux-${target} --file eve-industry-linux-${target}"
+                                }
+                                windowsBuildTargets.each { target ->
+                                    sh "bin/github-release upload --user ${GITHUB_USER} --repo eve-industry-go --tag latest --name eve-industry-windows-386 --file eve-industry-windows-${target}"
                                 }
                             }
                         }
