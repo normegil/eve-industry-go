@@ -101,19 +101,21 @@ pipeline {
                     steps {
                         script {
                             docker.withRegistry('https://index.docker.io/v1/', 'DockerHub') {
-                                builtImage.pu0sh('latest')
+                                builtImage.push('latest')
                             }
                         }
                     }
                 }
                 stage('Publish binaries') {
                     agent any
+                    tools {
+                        go '1.16.3'
+                    }
                     steps {
                         script {
-                            sh 'wget https://github.com/github-release/github-release/releases/download/v0.10.0/linux-amd64-github-release.bz2 -O bin/github-release.bz2'
-                            sh 'tar xf bin/github-release.bz2 -C bin/'
+                            sh 'go get github.com/github-release/github-release'
 
-                            sh 'bin/github-release --help'
+                            sh 'github-release --help'
                         }
                     }
                 }
