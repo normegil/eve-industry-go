@@ -112,20 +112,18 @@ pipeline {
                         go '1.16.3'
                     }
                     steps {
-                        withCredentials([usernamePassword(credentialsId: 'GithubToken', passwordVariable: 'GITHUB_TOKEN')]) {
-                            withEnv(['GITHUB_ORGANIZATION=normegil', 'GITHUB_REPO=eve-industry', 'VERSION_NAME=latest']) {
-                                script {
-                                    sh 'wget https://github.com/github-release/github-release/releases/download/v0.10.0/linux-amd64-github-release.bz2 -O bin/github-release.bz2'
-                                    sh 'bzip2 -d bin/github-release.bz2 || true'
-                                    sh 'chmod +x bin/github-release'
+                        withCredentials([usernamePassword(credentialsId: 'GithubToken', passwordVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
+                            script {
+                                sh 'wget https://github.com/github-release/github-release/releases/download/v0.10.0/linux-amd64-github-release.bz2 -O bin/github-release.bz2'
+                                sh 'bzip2 -d bin/github-release.bz2 || true'
+                                sh 'chmod +x bin/github-release'
 
-                                    sh 'github-release delete --user ${GITHUB_ORGANIZATION} --repo ${GITHUB_REPO} --tag ${VERSION_NAME} || true'
-                                    sh 'github-release release --user ${GITHUB_ORGANIZATION} --repo ${GITHUB_REPO} --tag ${VERSION_NAME} --name ${VERSION_NAME}'
+                                sh 'github-release delete --user ${GITHUB_USER} --repo eve-industry --tag latest || true'
+                                sh 'github-release release --user ${GITHUB_USER} --repo eve-industry --tag latest --name latest'
 
-                                    files = findFiles(glob: 'eve-industry-*')
-                                    files.each { file ->
-                                        sh "github-release upload --user ${GITHUB_ORGANIZATION} --repo ${GITHUB_REPO} --tag ${VERSION_NAME} --name ${file} --file ${file}"
-                                    }
+                                files = findFiles(glob: 'eve-industry-*')
+                                files.each { file ->
+                                    sh "github-release upload --user ${GITHUB_USER} --repo eve-industry --tag latest --name ${file} --file ${file}"
                                 }
                             }
                         }
