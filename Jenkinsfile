@@ -10,12 +10,13 @@ def windowsBuildTargets = [
     "amd64"
 ]
 
-def builtImage
+def builtDockerImage
 
 pipeline {
     agent none
     environment {
         XDG_CACHE_HOME = '/tmp/.cache'
+        VM_IMAGE_NAME = 'eve-industry'
     }
     stages {
         stage('Validate code') {
@@ -75,7 +76,7 @@ pipeline {
             }
             steps {
                 script {
-                    builtImage = docker.build("normegil/eve-industry:${env.BUILD_ID}")
+                    builtDockerImage = docker.build("normegil/eve-industry:${env.BUILD_ID}")
                 }
             }
         }
@@ -88,7 +89,7 @@ pipeline {
             }
             steps {
                 script {
-                    builtImage.withRun('-p 18080:18080') {
+                    builtDockerImage.withRun('-p 18080:18080') {
                         sh 'go test --tags=acceptance ./...'
                     }
                 }
@@ -103,7 +104,7 @@ pipeline {
                     steps {
                         script {
                             docker.withRegistry('https://index.docker.io/v1/', 'DockerHub') {
-                                builtImage.push('latest')
+                                builtDockerImage.push('latest')
                             }
                         }
                     }
@@ -180,19 +181,19 @@ pipeline {
         stage('Release') {
             agent any
             steps {
-                sh 'Create server from staging image'
-                sh 'Switch Load balancer'
-                sh 'Switch image names'
-                sh 'Remove old server'
+                sh 'echo "Create server from staging image"'
+                sh 'echo "Switch Load balancer"'
+                sh 'echo "Switch image names"'
+                sh 'echo "Remove old server"'
             }
         }
     }
     post {
         always {
             node('docker-build') {
-                sh "docker rmi ${builtImage.id}"
+                sh "docker rmi ${builtDockerImage.id}"
                 sh "echo 'Remove openstack running server'"
-                sh "echo 'Remove openstack image'"
+                sh "openstack image delete ${env.VM_IMAGE_NAME}"
                 cleanWs()
             }
         }

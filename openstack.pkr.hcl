@@ -1,0 +1,10 @@
+source "openstack" "ovh_ubuntu" {
+  image_name   = "Eve-Industry"
+  source_image = "6c0431dd-d128-4319-a4c7-37f971ad95af" // Ubuntu 20.04
+  ssh_username = "ubuntu"
+  flavor       = "d145323c-2fe7-4084-98d8-f65c54bbbaf4"
+}
+
+build {
+  sources = ["source.openstack.ovh_ubuntu"]
+}
