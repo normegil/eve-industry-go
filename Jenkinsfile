@@ -145,14 +145,13 @@ pipeline {
             }
         }
         stage('Test VM Image') {
+            agent any
             stage('launch server with image') {
-                agent any
                 steps {
                     sh 'echo "launch server"'
                 }
             }
             stage('Integration tests') {
-                agent any
                 tools {
                     go '1.16.3'
                 }
@@ -161,7 +160,6 @@ pipeline {
                 }
             }
             stage('Performance tests') {
-                agent any
                 steps {
                     sh 'echo "Performance tests"'
                 }
