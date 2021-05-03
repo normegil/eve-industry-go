@@ -138,11 +138,58 @@ pipeline {
                 }
             }
         }
+        stage('Create VM Image') {
+            agent any
+            steps {
+                sh 'echo "Creating openstack image"'
+            }
+        }
+        stage('Test VM Image') {
+            stage('launch server with image') {
+                agent any
+                steps {
+                    sh 'echo "launch server"'
+                }
+            }
+            stage('Integration tests') {
+                agent any
+                tools {
+                    go '1.16.3'
+                }
+                steps {
+                    sh 'go test --tags=integration ./...'
+                }
+            }
+            stage('Performance tests') {
+                agent any
+                steps {
+                    sh 'echo "Performance tests"'
+                }
+            }
+        }
+        stage('Publish VM Image') {
+            agent any
+            steps {
+                sh 'echo "Remove old staging openstack image"'
+                sh 'echo "Rename openstack image to staging"'
+            }
+        }
+        stage('Release') {
+            agent any
+            steps {
+                sh 'Create server from staging image'
+                sh 'Switch Load balancer'
+                sh 'Switch image names'
+                sh 'Remove old server'
+            }
+        }
     }
     post {
         always {
             node('docker-build') {
                 sh "docker rmi ${builtImage.id}"
+                sh "echo 'Remove openstack running server'"
+                sh "echo 'Remove openstack image'"
                 cleanWs()
             }
         }
