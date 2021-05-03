@@ -145,23 +145,28 @@ pipeline {
             }
         }
         stage('Test VM Image') {
-            agent any
-            stage('launch server with image') {
-                steps {
-                    sh 'echo "launch server"'
+            agent none
+            stages {
+                stage('launch server with image') {
+                    agent any
+                    steps {
+                        sh 'echo "launch server"'
+                    }
                 }
-            }
-            stage('Integration tests') {
-                tools {
-                    go '1.16.3'
+                stage('Integration tests') {
+                    agent any
+                    tools {
+                        go '1.16.3'
+                    }
+                    steps {
+                        sh 'go test --tags=integration ./...'
+                    }
                 }
-                steps {
-                    sh 'go test --tags=integration ./...'
-                }
-            }
-            stage('Performance tests') {
-                steps {
-                    sh 'echo "Performance tests"'
+                stage('Performance tests') {
+                    agent any
+                    steps {
+                        sh 'echo "Performance tests"'
+                    }
                 }
             }
         }
