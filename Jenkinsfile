@@ -17,6 +17,8 @@ pipeline {
     environment {
         XDG_CACHE_HOME = '/tmp/.cache'
         VM_IMAGE_NAME = 'eve-industry'
+        // Openstack
+        OS_AUTH_URL = 'https://auth.cloud.ovh.net/v3/'
     }
     stages {
         stage('Validate code') {
@@ -193,7 +195,9 @@ pipeline {
             node('docker-build') {
                 sh "docker rmi ${builtDockerImage.id}"
                 sh "echo 'Remove openstack running server'"
-                sh "openstack image delete ${env.VM_IMAGE_NAME}"
+                withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
+                    sh "openstack image delete ${env.VM_IMAGE_NAME}"
+                }
                 cleanWs()
             }
         }
