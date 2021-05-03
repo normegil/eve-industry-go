@@ -196,8 +196,14 @@ pipeline {
             node('docker-build') {
                 sh "docker rmi ${builtDockerImage.id}"
                 sh "echo 'Remove openstack running server'"
-                withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
-                    sh "openstack image delete ${env.VM_IMAGE_NAME}"
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
+                        try {
+                            sh "openstack image delete ${env.VM_IMAGE_NAME}-${env.BUILD_NUMBER}"
+                        } catch (Exception e) {
+                            echo e
+                        }
+                    }
                 }
                 cleanWs()
             }
