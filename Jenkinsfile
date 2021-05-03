@@ -201,7 +201,7 @@ pipeline {
                         try {
                             sh "openstack image delete ${env.VM_IMAGE_NAME}-${env.BUILD_NUMBER}"
                         } catch (Exception e) {
-                            echo e
+                            echo e.getMessage()
                         }
                     }
                 }
