@@ -19,6 +19,7 @@ pipeline {
         VM_IMAGE_NAME = 'eve-industry'
         // Openstack
         OS_AUTH_URL = 'https://auth.cloud.ovh.net/v3/'
+        OS_IDENTITY_API_VERSION=3
     }
     stages {
         stage('Validate code') {
