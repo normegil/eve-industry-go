@@ -21,6 +21,8 @@ pipeline {
         OS_AUTH_URL = 'https://auth.cloud.ovh.net/v3/'
         OS_IDENTITY_API_VERSION=3
         OS_USER_DOMAIN_NAME="Default"
+        OS_PROJECT_DOMAIN_NAME="Default"
+        OS_REGION_NAME="GRA5"
     }
     stages {
         stage('Validate code') {
