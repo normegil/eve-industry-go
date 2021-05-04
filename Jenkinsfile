@@ -160,7 +160,9 @@ pipeline {
         stage('Launch test VM') {
             agent any
             steps {
-                sh "openstack server create --flavor ${env.VM_TEST_SERVER_FLAVOR} --image ${env.VM_TEST_SERVER_NAME}-${env.BUILD_NUMBER} --wait ${env.VM_TEST_SERVER_NAME}-${env.BUILD_NUMBER}"
+                withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
+                    sh "openstack server create --flavor ${env.VM_TEST_SERVER_FLAVOR} --image ${env.VM_TEST_SERVER_NAME}-${env.BUILD_NUMBER} --wait ${env.VM_TEST_SERVER_NAME}-${env.BUILD_NUMBER}"
+                }
             }
         }
         stage('Integration tests') {
