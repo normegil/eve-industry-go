@@ -157,7 +157,7 @@ pipeline {
                 }
             }
         }
-        stage('Heavy tests launch') {
+        stage('Launch heavy tests ?') {
             agent none
             steps {
                 input message: "Launch integration tests & performance tests ?"
@@ -209,10 +209,15 @@ pipeline {
                 }
             }
         }
+        stage('Release to production ?') {
+            agent none
+            steps {
+               input message: "Release new code to production ?"
+            }
+        }
         stage('Release') {
             agent any
             steps {
-                input message: "Release new code to production ?"
                 sh 'echo "Create server from staging image"'
                 sh 'echo "Switch Load balancer"'
                 sh 'echo "Switch image names"'
