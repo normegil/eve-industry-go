@@ -30,7 +30,7 @@ pipeline {
     stages {
         stage('Validate code') {
             parallel {
-                stage('Lint') {
+                stage('Lint Go code') {
                     agent any
                     tools {
                         go '1.16.3'
@@ -38,6 +38,14 @@ pipeline {
                     steps {
                         sh './setup-dev-env.sh'
                         sh 'bin/golangci-lint run'
+                    }
+                }
+                stage('Lint Packer configuration') {
+                    agent any
+                    steps {
+                        withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
+                            sh 'packer validate .deployment/openstack.pkr.hcl'
+                        }
                     }
                 }
                 stage('Test') {
@@ -148,12 +156,16 @@ pipeline {
                 }
             }
         }
+        stage('Heavy tests launch') {
+            agent none
+            steps {
+                input message: "Launch integration tests & performance tests ?"
+            }
+        }
         stage('Create VM Image') {
             agent any
             steps {
-                input message: "Launch integration tests & performance tests ?"
                 withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
-                    sh 'packer validate .deployment/openstack.pkr.hcl'
                     sh "packer build -var=\"image_name=${env.VM_IMAGE_NAME}-${env.BUILD_NUMBER}\" .deployment/openstack.pkr.hcl"
                 }
             }
