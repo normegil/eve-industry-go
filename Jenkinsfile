@@ -23,6 +23,9 @@ pipeline {
         OS_USER_DOMAIN_NAME="Default"
         OS_PROJECT_DOMAIN_NAME="Default"
         OS_REGION_NAME="GRA5"
+        // Test server parameters
+        VM_TEST_SERVER_NAME = 'eve-industry-ci-test'
+        VM_TEST_SERVER_FLAVOR = 's1-2'
     }
     stages {
         stage('Validate code') {
@@ -157,7 +160,7 @@ pipeline {
         stage('Launch test VM') {
             agent any
             steps {
-                sh 'echo "launch server"'
+                sh "openstack server create --flavor ${env.VM_TEST_SERVER_FLAVOR} --image ${env.VM_TEST_SERVER_NAME}-${env.BUILD_NUMBER} --wait ${env.VM_TEST_SERVER_NAME}-${env.BUILD_NUMBER}"
             }
         }
         stage('Integration tests') {
@@ -204,9 +207,13 @@ pipeline {
         always {
             node('docker-build') {
                 sh "docker rmi ${builtDockerImage.id}"
-                sh "echo 'Remove openstack running server'"
                 script {
                     withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
+                        try {
+                            sh "openstack server delete ${env.VM_TEST_SERVER_NAME}-${env.BUILD_NUMBER}"
+                        } catch (Exception e) {
+                            echo e.getMessage()
+                        }
                         try {
                             sh "openstack image delete ${env.VM_IMAGE_NAME}-${env.BUILD_NUMBER}"
                         } catch (Exception e) {
