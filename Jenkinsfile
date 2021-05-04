@@ -148,6 +148,9 @@ pipeline {
                 }
             }
         }
+        input {
+            message: "Launch integration tests & performance tests ?"
+        }
         stage('Create VM Image') {
             agent any
             steps {
