@@ -154,7 +154,7 @@ pipeline {
                 }
             }
         }
-        stage('launch server with image') {
+        stage('Launch test VM') {
             agent any
             steps {
                 sh 'echo "launch server"'
@@ -185,7 +185,7 @@ pipeline {
                         } catch (Exception e) {
                             echo e.getMessage()
                         }
-                        sh 'openstack image set --property name=${env.VM_IMAGE_NAME}-staging ${env.VM_IMAGE_NAME}-${env.BUILD_NUMBER}'
+                        sh "openstack image set --property name=${env.VM_IMAGE_NAME}-staging ${env.VM_IMAGE_NAME}-${env.BUILD_NUMBER}"
                     }
                 }
             }
