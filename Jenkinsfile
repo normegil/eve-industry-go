@@ -148,7 +148,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
                     sh 'packer validate .deployment/openstack.pkr.hcl'
-                    sh 'packer build -var=\"image_name=${env.VM_IMAGE_NAME}-${env.BUILD_NUMBER}\" .deployment/openstack.pkr.hcl'
+                    sh "packer build -var=\"image_name=${env.VM_IMAGE_NAME}-${env.BUILD_NUMBER}\" .deployment/openstack.pkr.hcl"
                 }
             }
         }
