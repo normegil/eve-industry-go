@@ -145,7 +145,8 @@ pipeline {
         stage('Create VM Image') {
             agent any
             steps {
-                sh 'echo "Creating openstack image"'
+                sh 'packer validate .deployment/openstack.pkr.hcl'
+                sh 'packer build -var=\"image_name=${env.VM_IMAGE_NAME}-${env.BUILD_NUMBER}\" .deployment/openstack.pkr.hcl'
             }
         }
         stage('Test VM Image') {
