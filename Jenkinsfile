@@ -154,37 +154,40 @@ pipeline {
                 }
             }
         }
-        stage('Test VM Image') {
-            agent none
-            stages {
-                stage('launch server with image') {
-                    agent any
-                    steps {
-                        sh 'echo "launch server"'
-                    }
-                }
-                stage('Integration tests') {
-                    agent any
-                    tools {
-                        go '1.16.3'
-                    }
-                    steps {
-                        sh 'go test --tags=integration ./...'
-                    }
-                }
-                stage('Performance tests') {
-                    agent any
-                    steps {
-                        sh 'echo "Performance tests"'
-                    }
-                }
+        stage('launch server with image') {
+            agent any
+            steps {
+                sh 'echo "launch server"'
+            }
+        }
+        stage('Integration tests') {
+            agent any
+            tools {
+                go '1.16.3'
+            }
+            steps {
+                sh 'go test --tags=integration ./...'
+            }
+        }
+        stage('Performance tests') {
+            agent any
+            steps {
+                sh 'echo "Performance tests"'
             }
         }
         stage('Publish VM Image') {
             agent any
             steps {
-                sh 'echo "Remove old staging openstack image"'
-                sh 'echo "Rename openstack image to staging"'
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
+                        try {
+                            sh "openstack image delete ${env.VM_IMAGE_NAME}-staging"
+                        } catch (Exception e) {
+                            echo e.getMessage()
+                        }
+                        sh 'openstack image set --property name=${env.VM_IMAGE_NAME}-staging ${env.VM_IMAGE_NAME}-${env.BUILD_NUMBER}'
+                    }
+                }
             }
         }
         stage('Release') {
