@@ -151,9 +151,7 @@ pipeline {
         stage('Create VM Image') {
             agent any
             steps {
-                input {
-                    message: "Launch integration tests & performance tests ?"
-                }
+                input message: "Launch integration tests & performance tests ?"
                 withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
                     sh 'packer validate .deployment/openstack.pkr.hcl'
                     sh "packer build -var=\"image_name=${env.VM_IMAGE_NAME}-${env.BUILD_NUMBER}\" .deployment/openstack.pkr.hcl"
