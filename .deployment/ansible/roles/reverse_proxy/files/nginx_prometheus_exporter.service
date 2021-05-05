@@ -1,0 +1,14 @@
+[Unit]
+Description=NGINX Prometheus Exporter
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/nginx-prometheus-exporter \
+    -nginx.scrape-uri http://127.0.0.1:81/metrics
+
+SyslogIdentifier=nginx_prometheus_exporter
+Restart=always
+
+[Install]
+WantedBy=multi-user.target  

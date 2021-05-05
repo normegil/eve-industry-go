@@ -1,0 +1,16 @@
+---
+- name: Allow SSH incoming Connection
+  community.general.ufw:
+    rule: allow
+    name: OpenSSH
+- name: Allow Outgoing
+  community.general.ufw:
+    rule: allow
+    direction: out
+- name: Deny Incoming
+  community.general.ufw:
+    rule: deny
+    direction: in
+- name: Enable firewall
+  community.general.ufw:
+    state: enabled

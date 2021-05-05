@@ -1,3 +1,8 @@
+variable "vault_password_file" {
+  type    = string
+  default = ""
+}
+
 variable "image_name" {
   type    = string
   default = "eve-industry-dev"
@@ -12,4 +17,9 @@ source "openstack" "ovh_ubuntu" {
 
 build {
   sources = ["source.openstack.ovh_ubuntu"]
+  provisioner "ansible" {
+    playbook_file = "./ansible/eve-industry.yml"
+    user = "ubuntu"
+    extra_arguments = [ "--vault-password-file=${var.vault_password_file}" ]
+  }
 }

@@ -1,0 +1,70 @@
+---
+- name: Copy nginx source.list
+  copy:
+    src: "{{ role_path }}/files/nginx.list"
+    dest: "/etc/apt/sources.list.d/nginx.list"
+  register: nginx_sources_list
+- name: Key Server present
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: ABF5BD827BD9BF62
+- name: Refresh apt
+  apt:
+    update_cache: yes
+  when: nginx_sources_list.changed
+- name: Install nginx
+  apt:
+    name: nginx
+    state: present
+- name: Configure nginx
+  copy:
+    src: "{{ role_path }}/files/nginx.conf"
+    dest: "/etc/nginx/nginx.conf"
+    force: yes
+- name: Remove default configuration
+  file:
+    dest: /etc/nginx/conf.d/default.conf
+    state: absent
+- name: Test nginx configuration
+  shell: nginx -t
+- name: Nginx started
+  systemd:
+    name: nginx
+    state: started
+    enabled: yes
+
+- name: Configure endpoint - Nginx Metrics
+  include_role:
+    name: reverse_proxy_configure
+  vars:
+    local_path_to_conf: "{{ playbook_dir }}/files/reverse_proxy_conf/"
+    conf_name: "metrics.conf"
+
+- name: Nginx Prometheus Exporter - Download
+  get_url:
+    url: https://github.com/nginxinc/nginx-prometheus-exporter/releases/download/v0.7.0/nginx-prometheus-exporter-0.7.0-linux-amd64.tar.gz
+    dest: /opt/nginx-prometheus-exporter-0.7.0-linux-amd64.tar.gz
+  register: nginx_exporter_download
+- name: Nginx Prometheus Exporter- Extract
+  unarchive:
+    src: /opt/nginx-prometheus-exporter-0.7.0-linux-amd64.tar.gz
+    dest: /opt
+    remote_src: yes
+  when: nginx_exporter_download.changed
+- name: Nginx Prometheus Exporter - Install
+  copy:
+    src: /opt/nginx-prometheus-exporter
+    dest: /usr/local/bin/nginx-prometheus-exporter
+    mode: a+x
+    remote_src: yes
+  when: nginx_exporter_download.changed
+- name: Nginx Prometheus Exporter - Install Service
+  copy:
+    src: "{{ role_path }}/files/nginx_prometheus_exporter.service"
+    dest: /usr/lib/systemd/system/nginx_prometheus_exporter.service
+    mode: a+x
+- name: Nginx Prometheus Exporter - started and enabled
+  systemd:
+    name: nginx_prometheus_exporter
+    state: started
+    enabled: yes
