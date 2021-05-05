@@ -17,6 +17,7 @@ pipeline {
     environment {
         XDG_CACHE_HOME = '/tmp/.cache'
         VM_IMAGE_NAME = 'eve-industry'
+        SERVER_NAME = 'eve-industry'
         // Openstack
         OS_AUTH_URL = 'https://auth.cloud.ovh.net/v3/'
         OS_IDENTITY_API_VERSION=3
@@ -224,10 +225,19 @@ pipeline {
         stage('Release') {
             agent any
             steps {
-                sh 'echo "Create server from staging image"'
-                sh 'echo "Switch Load balancer"'
-                sh 'echo "Switch image names"'
-                sh 'echo "Remove old server"'
+                withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
+                    sh "openstack server create --flavor s1-2 --image ${env.SERVER_NAME}-staging --wait ${env.SERVER_NAME}-staging"
+
+                    sh 'echo "Switch Load balancer"'
+
+                    // Delete previous production
+                    sh "openstack server delete ${env.SERVER_NAME}-production"
+                    sh "openstack image set --property name=${env.VM_IMAGE_NAME}-previous ${env.VM_IMAGE_NAME}-production"
+
+                    // Promote staging to production
+                    sh "openstack server set --name ${env.SERVER_NAME}-production ${env.SERVER_NAME}-staging"
+                    sh "openstack image set --property name=${env.VM_IMAGE_NAME}-production ${env.VM_IMAGE_NAME}-staging"
+                }
             }
         }
     }
