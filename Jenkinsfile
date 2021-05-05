@@ -43,8 +43,10 @@ pipeline {
                 stage('Lint Packer configuration') {
                     agent any
                     steps {
-                        withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
-                            sh 'packer validate .deployment/openstack.pkr.hcl'
+                        dir(".deployment") {
+                            withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
+                                sh 'packer validate .deployment/openstack.pkr.hcl'
+                            }
                         }
                     }
                 }
@@ -168,8 +170,10 @@ pipeline {
             steps {
                 sh 'ansible-galaxy collection install community.general'
                 sh 'ansible-galaxy collection install community.docker'
-                withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'), file(credentialsId: 'AnsibleVaultPasswordFile', variable: 'AUSIBLE_VAULT_PASSWORD_PATH')]) {
-                    sh "packer build -var=\"image_name=${env.VM_IMAGE_NAME}-${env.BUILD_NUMBER}\" .deployment/openstack.pkr.hcl"
+                dir(".deployment") {
+                    withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'), file(credentialsId: 'AnsibleVaultPasswordFile', variable: 'AUSIBLE_VAULT_PASSWORD_PATH')]) {
+                        sh "packer build -var=\"image_name=${env.VM_IMAGE_NAME}-${env.BUILD_NUMBER}\" .deployment/openstack.pkr.hcl"
+                    }
                 }
             }
         }
