@@ -1,0 +1,10 @@
+---
+- name: Releasing server
+  hosts: load_balancer
+  become: true
+  tasks:
+    - include_role:
+        name: reverse_proxy_configure
+      vars:
+        local_path_to_conf: "{{ playbook_dir }}/files/reverse_proxy_conf/"
+        conf_name: "eve_industry_load_balancer.conf"

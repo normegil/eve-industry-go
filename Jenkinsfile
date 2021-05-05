@@ -201,21 +201,6 @@ pipeline {
                 sh 'echo "Performance tests"'
             }
         }
-        stage('Publish VM Image') {
-            agent any
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
-                        try {
-                            sh "openstack image delete ${env.VM_IMAGE_NAME}-staging"
-                        } catch (Exception e) {
-                            echo e.getMessage()
-                        }
-                        sh "openstack image set --property name=${env.VM_IMAGE_NAME}-staging ${env.VM_IMAGE_NAME}-${env.BUILD_NUMBER}"
-                    }
-                }
-            }
-        }
         stage('Release to production ?') {
             agent none
             steps {
@@ -225,18 +210,28 @@ pipeline {
         stage('Release') {
             agent any
             steps {
-                withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
-                    sh "openstack server create --flavor s1-2 --image ${env.SERVER_NAME}-staging --wait ${env.SERVER_NAME}-staging"
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
+                        sh "openstack server create --flavor s1-2 --image ${env.VM_IMAGE_NAME}-${env.BUILD_NUMBER} --wait ${env.SERVER_NAME}-${env.BUILD_NUMBER}"
+                        STAGING_IP = sh (
+                            script: "openstack server show -c addresses --format json ${env.SERVER_NAME}-${env.BUILD_NUMBER} | jq -r '.addresses."Ext-Net" | .[]' | grep \"^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$\""
+                            returnStdout: true,
+                        ).trim()
 
-                    sh 'echo "Switch Load balancer"'
+                        dir(".deployment/ansible/") {
+                            sh "ansible-playbook release.yml --extra-vars \"release_env_ip=${STAGING_IP}\""
+                        }
 
-                    // Delete previous production
-                    sh "openstack server delete ${env.SERVER_NAME}-production"
-                    sh "openstack image set --property name=${env.VM_IMAGE_NAME}-previous ${env.VM_IMAGE_NAME}-production"
+                        // Wait for no connections to current production machine
 
-                    // Promote staging to production
-                    sh "openstack server set --name ${env.SERVER_NAME}-production ${env.SERVER_NAME}-staging"
-                    sh "openstack image set --property name=${env.VM_IMAGE_NAME}-production ${env.VM_IMAGE_NAME}-staging"
+                        // Delete previous production
+                        sh "openstack server delete ${env.SERVER_NAME}-production"
+                        sh "openstack image set --property name=${env.VM_IMAGE_NAME}-previous ${env.VM_IMAGE_NAME}-production"
+
+                        // Promote staging to production
+                        sh "openstack server set --name ${env.SERVER_NAME}-production ${env.SERVER_NAME}-${env.BUILD_NUMBER}"
+                        sh "openstack image set --property name=${env.VM_IMAGE_NAME}-production ${env.VM_IMAGE_NAME}-${env.BUILD_NUMBER}"
+                    }
                 }
             }
         }

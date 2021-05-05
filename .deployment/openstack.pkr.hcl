@@ -18,7 +18,7 @@ source "openstack" "ovh_ubuntu" {
 build {
   sources = ["source.openstack.ovh_ubuntu"]
   provisioner "ansible" {
-    playbook_file = "./ansible/eve-industry.yml"
+    playbook_file = "./ansible/provisioning.yml"
     user = "ubuntu"
     extra_arguments = [ "--vault-password-file=${var.vault_password_file}" ]
   }

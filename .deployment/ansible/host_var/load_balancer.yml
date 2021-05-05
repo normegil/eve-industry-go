@@ -1,0 +1,3 @@
+---
+ansible_host: "eve-industry.com"
+ansible_user: "ubuntu"

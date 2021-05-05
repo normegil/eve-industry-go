@@ -16,4 +16,4 @@
     name: reverse_proxy_configure
   vars:
     local_path_to_conf: "{{ playbook_dir }}/files/reverse_proxy_conf/"
-    conf_name: "eve_industry.conf"
+    conf_name: "eve_industry_local.conf"

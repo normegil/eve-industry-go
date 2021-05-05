@@ -7,7 +7,6 @@
   template:
     src: "{{ local_path_to_conf }}/{{ conf_name }}"
     dest: "/etc/nginx/conf.d/{{ conf_name }}"
-  when: conf.stat.exists == False
   register: nginx_config
 - name: Test nginx configuration
   shell: nginx -t
