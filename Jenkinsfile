@@ -45,7 +45,7 @@ pipeline {
                     steps {
                         dir(".deployment") {
                             withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
-                                sh 'packer validate .deployment/openstack.pkr.hcl'
+                                sh 'packer validate openstack.pkr.hcl'
                             }
                         }
                     }
@@ -172,7 +172,7 @@ pipeline {
                 sh 'ansible-galaxy collection install community.docker'
                 dir(".deployment") {
                     withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'), file(credentialsId: 'AnsibleVaultPasswordFile', variable: 'AUSIBLE_VAULT_PASSWORD_PATH')]) {
-                        sh "packer build -var=\"image_name=${env.VM_IMAGE_NAME}-${env.BUILD_NUMBER}\" .deployment/openstack.pkr.hcl"
+                        sh "packer build -var=\"image_name=${env.VM_IMAGE_NAME}-${env.BUILD_NUMBER}\" openstack.pkr.hcl"
                     }
                 }
             }
