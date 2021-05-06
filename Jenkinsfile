@@ -213,8 +213,13 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
                         sh "openstack server create --flavor s1-2 --image ${env.VM_IMAGE_NAME}-${env.BUILD_NUMBER} --wait ${env.SERVER_NAME}-${env.BUILD_NUMBER}"
+
                         STAGING_IP = sh (
-                            script: "openstack server show -c addresses --format json ${env.SERVER_NAME}-${env.BUILD_NUMBER} | jq -r '.addresses."Ext-Net" | .[]' | grep \"^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$\""
+                            script: ".deployment/openstack-server-private-ipv4.sh ${env.SERVER_NAME}-${env.BUILD_NUMBER}"
+                            returnStdout: true,
+                        ).trim()
+                        PRODUCTION_IP = sh (
+                            script: ".deployment/openstack-server-private-ipv4.sh ${env.SERVER_NAME}-production"
                             returnStdout: true,
                         ).trim()
 
@@ -223,6 +228,17 @@ pipeline {
                         }
 
                         // Wait for no connections to current production machine
+                        NUMBER_OF_CONNECTIONS = sh (
+                            script: "ssh ubuntu@${PRODUCTION_IP} netstat -an | grep -E ":443|:80" | grep -v ":8080" | grep -E "ESTABLISHED|CLOSING" | wc -l"
+                            returnStdout: true
+                        ).trim()
+                        while(NUMBER_OF_CONNECTIONS > 0) {
+                            NUMBER_OF_CONNECTIONS = sh (
+                                script: "ssh ubuntu@${PRODUCTION_IP} netstat -an | grep -E ":443|:80" | grep -v ":8080" | grep -E "ESTABLISHED|CLOSING" | wc -l"
+                                returnStdout: true
+                            ).trim()
+                            sleep (time:1)
+                        }
 
                         // Delete previous production
                         sh "openstack server delete ${env.SERVER_NAME}-production"
