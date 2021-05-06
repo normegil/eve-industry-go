@@ -215,12 +215,12 @@ pipeline {
                         sh "openstack server create --flavor s1-2 --image ${env.VM_IMAGE_NAME}-${env.BUILD_NUMBER} --wait ${env.SERVER_NAME}-${env.BUILD_NUMBER}"
 
                         STAGING_IP = sh (
-                            script: ".deployment/openstack-server-private-ipv4.sh ${env.SERVER_NAME}-${env.BUILD_NUMBER}"
-                            returnStdout: true,
+                            script: ".deployment/openstack-server-private-ipv4.sh ${env.SERVER_NAME}-${env.BUILD_NUMBER}",
+                            returnStdout: true
                         ).trim()
                         PRODUCTION_IP = sh (
-                            script: ".deployment/openstack-server-private-ipv4.sh ${env.SERVER_NAME}-production"
-                            returnStdout: true,
+                            script: ".deployment/openstack-server-private-ipv4.sh ${env.SERVER_NAME}-production",
+                            returnStdout: true
                         ).trim()
 
                         dir(".deployment/ansible/") {
@@ -229,12 +229,12 @@ pipeline {
 
                         // Wait for no connections to current production machine
                         NUMBER_OF_CONNECTIONS = sh (
-                            script: "ssh ubuntu@${PRODUCTION_IP} netstat -an | grep -E ":443|:80" | grep -v ":8080" | grep -E "ESTABLISHED|CLOSING" | wc -l"
+                            script: "ssh ubuntu@${PRODUCTION_IP} netstat -an | grep -E ":443|:80" | grep -v ":8080" | grep -E "ESTABLISHED|CLOSING" | wc -l",
                             returnStdout: true
                         ).trim()
                         while(NUMBER_OF_CONNECTIONS > 0) {
                             NUMBER_OF_CONNECTIONS = sh (
-                                script: "ssh ubuntu@${PRODUCTION_IP} netstat -an | grep -E ":443|:80" | grep -v ":8080" | grep -E "ESTABLISHED|CLOSING" | wc -l"
+                                script: "ssh ubuntu@${PRODUCTION_IP} netstat -an | grep -E ":443|:80" | grep -v ":8080" | grep -E "ESTABLISHED|CLOSING" | wc -l",
                                 returnStdout: true
                             ).trim()
                             sleep (time:1)
