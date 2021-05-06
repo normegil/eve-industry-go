@@ -229,12 +229,12 @@ pipeline {
 
                         // Wait for no connections to current production machine
                         NUMBER_OF_CONNECTIONS = sh (
-                            script: "ssh ubuntu@${PRODUCTION_IP} netstat -an | grep -E ":443|:80" | grep -v ":8080" | grep -E "ESTABLISHED|CLOSING" | wc -l",
+                            script: "ssh ubuntu@${PRODUCTION_IP} netstat -an | grep -E \":443|:80\" | grep -v \":8080\" | grep -E \"ESTABLISHED|CLOSING\" | wc -l",
                             returnStdout: true
                         ).trim()
                         while(NUMBER_OF_CONNECTIONS > 0) {
                             NUMBER_OF_CONNECTIONS = sh (
-                                script: "ssh ubuntu@${PRODUCTION_IP} netstat -an | grep -E ":443|:80" | grep -v ":8080" | grep -E "ESTABLISHED|CLOSING" | wc -l",
+                                script: "ssh ubuntu@${PRODUCTION_IP} netstat -an | grep -E \":443|:80\" | grep -v \":8080\" | grep -E \"ESTABLISHED|CLOSING\" | wc -l",
                                 returnStdout: true
                             ).trim()
                             sleep (time:1)
