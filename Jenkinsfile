@@ -211,8 +211,8 @@ pipeline {
             agent any
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
-                        sh "openstack server create --flavor s1-2 --image ${env.VM_IMAGE_NAME}-${env.BUILD_NUMBER} --wait ${env.SERVER_NAME}-${env.BUILD_NUMBER}"
+                    withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'), sshUserPrivateKey(credentialsId: 'JenkinsSSHKey', keyFileVariable: 'JENKINS_PRIVATE_KEY')]) {
+                        sh "openstack server create --key-name JENKINS_KEY --flavor s1-2 --image ${env.VM_IMAGE_NAME}-${env.BUILD_NUMBER} --wait ${env.SERVER_NAME}-${env.BUILD_NUMBER}"
 
                         STAGING_IP = sh (
                             script: ".deployment/openstack-server-private-ipv4.sh ${env.SERVER_NAME}-${env.BUILD_NUMBER}",
@@ -229,12 +229,12 @@ pipeline {
 
                         // Wait for no connections to current production machine
                         NUMBER_OF_CONNECTIONS = sh (
-                            script: "ssh ubuntu@${PRODUCTION_IP} netstat -an | grep -E \":443|:80\" | grep -v \":8080\" | grep -E \"ESTABLISHED|CLOSING\" | wc -l",
+                            script: "ssh -i ${JENKINS_PRIVATE_KEY} ubuntu@${PRODUCTION_IP} netstat -an | grep -E \":443|:80\" | grep -v \":8080\" | grep -E \"ESTABLISHED|CLOSING\" | wc -l",
                             returnStdout: true
                         ).trim()
                         while(NUMBER_OF_CONNECTIONS > 0) {
                             NUMBER_OF_CONNECTIONS = sh (
-                                script: "ssh ubuntu@${PRODUCTION_IP} netstat -an | grep -E \":443|:80\" | grep -v \":8080\" | grep -E \"ESTABLISHED|CLOSING\" | wc -l",
+                                script: "ssh -i ${JENKINS_PRIVATE_KEY} ubuntu@${PRODUCTION_IP} netstat -an | grep -E \":443|:80\" | grep -v \":8080\" | grep -E \"ESTABLISHED|CLOSING\" | wc -l",
                                 returnStdout: true
                             ).trim()
                             sleep (time:1)
