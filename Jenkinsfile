@@ -214,35 +214,46 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'), sshUserPrivateKey(credentialsId: 'JenkinsSSHKey', keyFileVariable: 'JENKINS_PRIVATE_KEY')]) {
                         sh "openstack server create --key-name JENKINS_KEY --flavor s1-2 --image ${env.VM_IMAGE_NAME}-${env.BUILD_NUMBER} --wait ${env.SERVER_NAME}-${env.BUILD_NUMBER}"
 
+                        PRODUCTION_EXIST = sh (
+                            script: "openstack server list | grep ${env.SERVER_NAME}-production | wc -l",
+                            returnStdout: true
+                        ).trim()
+
                         STAGING_IP = sh (
                             script: ".deployment/openstack-server-private-ipv4.sh ${env.SERVER_NAME}-${env.BUILD_NUMBER}",
                             returnStdout: true
                         ).trim()
-                        PRODUCTION_IP = sh (
-                            script: ".deployment/openstack-server-private-ipv4.sh ${env.SERVER_NAME}-production",
-                            returnStdout: true
-                        ).trim()
+
+                        PRODUCTION_IP = ""
+                        if (PRODUCTION_EXIST > 0) {
+                            PRODUCTION_IP = sh (
+                                script: ".deployment/openstack-server-private-ipv4.sh ${env.SERVER_NAME}-production",
+                                returnStdout: true
+                            ).trim()
+                        }
 
                         dir(".deployment/ansible/") {
                             sh "ansible-playbook release.yml --extra-vars \"release_env_ip=${STAGING_IP}\""
                         }
 
-                        // Wait for no connections to current production machine
-                        NUMBER_OF_CONNECTIONS = sh (
-                            script: "ssh -i ${JENKINS_PRIVATE_KEY} ubuntu@${PRODUCTION_IP} netstat -an | grep -E \":443|:80\" | grep -v \":8080\" | grep -E \"ESTABLISHED|CLOSING\" | wc -l",
-                            returnStdout: true
-                        ).trim()
-                        while(NUMBER_OF_CONNECTIONS > 0) {
+                        if (PRODUCTION_EXIST > 0) {
+                            // Wait for no connections to current production machine
                             NUMBER_OF_CONNECTIONS = sh (
                                 script: "ssh -i ${JENKINS_PRIVATE_KEY} ubuntu@${PRODUCTION_IP} netstat -an | grep -E \":443|:80\" | grep -v \":8080\" | grep -E \"ESTABLISHED|CLOSING\" | wc -l",
                                 returnStdout: true
                             ).trim()
-                            sleep (time:1)
-                        }
+                            while(NUMBER_OF_CONNECTIONS > 0) {
+                                NUMBER_OF_CONNECTIONS = sh (
+                                    script: "ssh -i ${JENKINS_PRIVATE_KEY} ubuntu@${PRODUCTION_IP} netstat -an | grep -E \":443|:80\" | grep -v \":8080\" | grep -E \"ESTABLISHED|CLOSING\" | wc -l",
+                                    returnStdout: true
+                                ).trim()
+                                sleep (time:1)
+                            }
 
-                        // Delete previous production
-                        sh "openstack server delete ${env.SERVER_NAME}-production"
-                        sh "openstack image set --property name=${env.VM_IMAGE_NAME}-previous ${env.VM_IMAGE_NAME}-production"
+                            // Delete previous production
+                            sh "openstack server delete ${env.SERVER_NAME}-production"
+                            sh "openstack image set --property name=${env.VM_IMAGE_NAME}-previous ${env.VM_IMAGE_NAME}-production"
+                        }
 
                         // Promote staging to production
                         sh "openstack server set --name ${env.SERVER_NAME}-production ${env.SERVER_NAME}-${env.BUILD_NUMBER}"
