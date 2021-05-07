@@ -43,10 +43,6 @@
       - docker-ce
       - docker-ce-cli
       - containerd.io
-- name: Docker - python lib - APT
-  apt:
-    name: python3-docker
-    state: present
 - name: Python library - Remove old version
   pip:
     name: docker-py
