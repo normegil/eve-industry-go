@@ -270,6 +270,13 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
                         try {
+                            // Delete server if release step failed
+                            sh "openstack server delete ${env.SERVER_NAME}-${env.BUILD_NUMBER}"
+                        } catch (Exception e) {
+                            echo e.getMessage()
+                        }
+                        try {
+                            // Delete test server
                             sh "openstack server delete ${env.VM_TEST_SERVER_NAME}-${env.BUILD_NUMBER}"
                         } catch (Exception e) {
                             echo e.getMessage()
