@@ -144,8 +144,8 @@ pipeline {
 
                                 sh 'ls'
 
-                                sh 'bin/github-release delete --user ${GITHUB_USER} --repo evevulcan-go --tag latest || true'
-                                sh 'bin/github-release release --user ${GITHUB_USER} --repo evevulcan-go --tag latest --name latest'
+                                sh 'bin/github-release delete --user ${GITHUB_USER} --repo evevulcan --tag latest || true'
+                                sh 'bin/github-release release --user ${GITHUB_USER} --repo evevulcan --tag latest --name latest'
                                 linuxBuildTargets.each { target ->
                                     unstash name: "evevulcan-linux-${target}"
                                     sh "bin/github-release upload --user ${GITHUB_USER} --repo evevulcan --tag latest --name evevulcan-linux-${target} --file evevulcan-linux-${target}"
