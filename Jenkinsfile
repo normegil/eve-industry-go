@@ -206,7 +206,9 @@ pipeline {
             agent any
             steps {
                 script {
-                    sh "openstack server delete ${env.VM_TEST_SERVER_NAME}-${env.BUILD_NUMBER}"
+                    withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
+                        sh "openstack server delete ${env.VM_TEST_SERVER_NAME}-${env.BUILD_NUMBER}"
+                    }
                 }
             }
         }
