@@ -231,7 +231,7 @@ pipeline {
                         PRODUCTION_EXIST_STR = sh (
                             script: "openstack server list | grep ${env.SERVER_NAME}-production | wc -l",
                             returnStdout: true
-                        ).trim() as Integer
+                        ).trim()
                         echo PRODUCTION_EXIST_STR
                         PRODUCTION_EXIST = PRODUCTION_EXIST_STR as Integer
 
