@@ -251,7 +251,7 @@ pipeline {
                         }
 
                         dir(".deployment/ansible/") {
-                            sh "ansible-playbook release.yml --extra-vars \"release_env_ip=${STAGING_IP}\""
+                            sh "ansible-playbook release.yml -i inventory.yml --extra-vars \"release_env_ip=${STAGING_IP}\""
                         }
 
                         if (PRODUCTION_EXIST > 0) {
