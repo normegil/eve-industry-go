@@ -15,6 +15,8 @@ def builtDockerImage
 pipeline {
     agent none
     environment {
+        IPV4_REGEX = '^([0-9]{1,3}\.){3}[0-9]{1,3}$'
+
         XDG_CACHE_HOME = '/tmp/.cache'
         VM_IMAGE_NAME = 'evevulcan'
         SERVER_NAME = 'evevulcan'
@@ -236,6 +238,7 @@ pipeline {
                             script: ".deployment/openstack-server-private-ipv4.sh ${env.SERVER_NAME}-${env.BUILD_NUMBER}",
                             returnStdout: true
                         ).trim()
+                        assert STAGING_IP =~ IPV4_REGEX
 
                         PRODUCTION_IP = ""
                         if (PRODUCTION_EXIST > 0) {
@@ -243,6 +246,7 @@ pipeline {
                                 script: ".deployment/openstack-server-private-ipv4.sh ${env.SERVER_NAME}-production",
                                 returnStdout: true
                             ).trim()
+                            assert PRODUCTION_IP =~ IPV4_REGEX
                         }
 
                         dir(".deployment/ansible/") {
@@ -252,12 +256,12 @@ pipeline {
                         if (PRODUCTION_EXIST > 0) {
                             // Wait for no connections to current production machine
                             NUMBER_OF_CONNECTIONS = sh (
-                                script: "ssh -i ${env.JENKINS_PRIVATE_KEY} ubuntu@${env.PRODUCTION_IP} netstat -an | grep -E \":443|:80\" | grep -v \":8080\" | grep -E \"ESTABLISHED|CLOSING\" | wc -l",
+                                script: "ssh -i ${env.JENKINS_PRIVATE_KEY} ubuntu@${PRODUCTION_IP} netstat -an | grep -E \":443|:80\" | grep -v \":8080\" | grep -E \"ESTABLISHED|CLOSING\" | wc -l",
                                 returnStdout: true
                             ).trim()
                             while(NUMBER_OF_CONNECTIONS > 0) {
                                 NUMBER_OF_CONNECTIONS = sh (
-                                    script: "ssh -i ${env.JENKINS_PRIVATE_KEY} ubuntu@${env.PRODUCTION_IP} netstat -an | grep -E \":443|:80\" | grep -v \":8080\" | grep -E \"ESTABLISHED|CLOSING\" | wc -l",
+                                    script: "ssh -i ${env.JENKINS_PRIVATE_KEY} ubuntu@${PRODUCTION_IP} netstat -an | grep -E \":443|:80\" | grep -v \":8080\" | grep -E \"ESTABLISHED|CLOSING\" | wc -l",
                                     returnStdout: true
                                 ).trim()
                                 sleep (time:1)
