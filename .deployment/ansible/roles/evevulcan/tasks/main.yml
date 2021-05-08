@@ -3,8 +3,8 @@
     file: secrets.yml
 - name: Eve Industry - Run container
   community.docker.docker_container:
-    name: eve-industry
-    image: normegil/eve-industry:latest
+    name: evevulcan
+    image: normegil/evevulcan:latest
     restart_policy: always
     ports:
       - "18080:18080"
@@ -16,4 +16,4 @@
     name: reverse_proxy_configure
   vars:
     local_path_to_conf: "{{ playbook_dir }}/files/reverse_proxy_conf/"
-    conf_name: "eve_industry_local.conf"
+    conf_name: "evevulcan_local.conf"

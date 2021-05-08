@@ -1,3 +1,3 @@
-module github.com/normegil/eve-industry
+module github.com/normegil/evevulcan
 
 go 1.16

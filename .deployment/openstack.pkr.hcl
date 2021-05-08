@@ -5,7 +5,7 @@ variable "vault_password_file" {
 
 variable "image_name" {
   type    = string
-  default = "eve-industry-dev"
+  default = "evevulcan-dev"
 }
 
 source "openstack" "ovh_ubuntu" {

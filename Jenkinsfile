@@ -16,8 +16,8 @@ pipeline {
     agent none
     environment {
         XDG_CACHE_HOME = '/tmp/.cache'
-        VM_IMAGE_NAME = 'eve-industry'
-        SERVER_NAME = 'eve-industry'
+        VM_IMAGE_NAME = 'evevulcan'
+        SERVER_NAME = 'evevulcan'
         // Openstack
         OS_AUTH_URL = 'https://auth.cloud.ovh.net/v3/'
         OS_IDENTITY_API_VERSION=3
@@ -25,7 +25,7 @@ pipeline {
         OS_PROJECT_DOMAIN_NAME="Default"
         OS_REGION_NAME="GRA5"
         // Test server parameters
-        VM_TEST_SERVER_NAME = 'eve-industry-ci-test'
+        VM_TEST_SERVER_NAME = 'evevulcan-ci-test'
         VM_TEST_SERVER_FLAVOR = 's1-2'
     }
     stages {
@@ -73,16 +73,16 @@ pipeline {
                     linuxBuildTargets.each { target ->
                         builds["linux-"+target] = {
                             stage("Build Linux - ${target}") {
-                                sh "GOOS=linux GOARCH=${target} go build -o eve-industry-linux-${target} ./..."
-                                stash name: "eve-industry-linux-${target}", allowEmpty: false, includes: "eve-industry-linux-${target}"
+                                sh "GOOS=linux GOARCH=${target} go build -o evevulcan-linux-${target} ./..."
+                                stash name: "evevulcan-linux-${target}", allowEmpty: false, includes: "evevulcan-linux-${target}"
                             }
                         }
                     }
                     windowsBuildTargets.each { target ->
                         builds["windows-"+target] = {
                             stage("Build Windows - ${target}") {
-                                sh "GOOS=windows GOARCH=${target} go build -o eve-industry-windows-${target}.exe ./..."
-                                stash name: "eve-industry-windows-${target}", allowEmpty: false, includes: "eve-industry-windows-${target}.exe"
+                                sh "GOOS=windows GOARCH=${target} go build -o evevulcan-windows-${target}.exe ./..."
+                                stash name: "evevulcan-windows-${target}", allowEmpty: false, includes: "evevulcan-windows-${target}.exe"
                             }
                         }
                     }
@@ -96,7 +96,7 @@ pipeline {
             }
             steps {
                 script {
-                    builtDockerImage = docker.build("normegil/eve-industry:${env.BUILD_ID}")
+                    builtDockerImage = docker.build("normegil/evevulcan:${env.BUILD_ID}")
                 }
             }
         }
@@ -144,15 +144,15 @@ pipeline {
 
                                 sh 'ls'
 
-                                sh 'bin/github-release delete --user ${GITHUB_USER} --repo eve-industry-go --tag latest || true'
-                                sh 'bin/github-release release --user ${GITHUB_USER} --repo eve-industry-go --tag latest --name latest'
+                                sh 'bin/github-release delete --user ${GITHUB_USER} --repo evevulcan-go --tag latest || true'
+                                sh 'bin/github-release release --user ${GITHUB_USER} --repo evevulcan-go --tag latest --name latest'
                                 linuxBuildTargets.each { target ->
-                                    unstash name: "eve-industry-linux-${target}"
-                                    sh "bin/github-release upload --user ${GITHUB_USER} --repo eve-industry-go --tag latest --name eve-industry-linux-${target} --file eve-industry-linux-${target}"
+                                    unstash name: "evevulcan-linux-${target}"
+                                    sh "bin/github-release upload --user ${GITHUB_USER} --repo evevulcan --tag latest --name evevulcan-linux-${target} --file evevulcan-linux-${target}"
                                 }
                                 windowsBuildTargets.each { target ->
-                                unstash name: "eve-industry-windows-${target}"
-                                    sh "bin/github-release upload --user ${GITHUB_USER} --repo eve-industry-go --tag latest --name eve-industry-windows-${target}.exe --file eve-industry-windows-${target}.exe"
+                                unstash name: "evevulcan-windows-${target}"
+                                    sh "bin/github-release upload --user ${GITHUB_USER} --repo evevulcan --tag latest --name evevulcan-windows-${target}.exe --file evevulcan-windows-${target}.exe"
                                 }
                             }
                         }
