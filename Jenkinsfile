@@ -228,11 +228,12 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD'), sshUserPrivateKey(credentialsId: 'JenkinsSSHKey', keyFileVariable: 'JENKINS_PRIVATE_KEY')]) {
                         sh "openstack server create --key-name JENKINS_KEY --flavor s1-2 --image ${env.VM_IMAGE_NAME}-${env.BUILD_NUMBER} --wait ${env.SERVER_NAME}-${env.BUILD_NUMBER}"
 
-                        PRODUCTION_EXIST = sh (
+                        PRODUCTION_EXIST_STR = sh (
                             script: "openstack server list | grep ${env.SERVER_NAME}-production | wc -l",
                             returnStdout: true
                         ).trim() as Integer
-                        echo PRODUCTION_EXIST
+                        echo PRODUCTION_EXIST_STR
+                        PRODUCTION_EXIST = PRODUCTION_EXIST_STR as Integer
 
                         STAGING_IP = sh (
                             script: ".deployment/openstack-server-private-ipv4.sh ${env.SERVER_NAME}-${env.BUILD_NUMBER}",
