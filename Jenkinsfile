@@ -229,7 +229,8 @@ pipeline {
                         PRODUCTION_EXIST = sh (
                             script: "openstack server list | grep ${env.SERVER_NAME}-production | wc -l",
                             returnStdout: true
-                        ).trim()
+                        ).trim() as Integer
+                        echo PRODUCTION_EXIST
 
                         STAGING_IP = sh (
                             script: ".deployment/openstack-server-private-ipv4.sh ${env.SERVER_NAME}-${env.BUILD_NUMBER}",
@@ -251,12 +252,12 @@ pipeline {
                         if (PRODUCTION_EXIST > 0) {
                             // Wait for no connections to current production machine
                             NUMBER_OF_CONNECTIONS = sh (
-                                script: "ssh -i ${JENKINS_PRIVATE_KEY} ubuntu@${PRODUCTION_IP} netstat -an | grep -E \":443|:80\" | grep -v \":8080\" | grep -E \"ESTABLISHED|CLOSING\" | wc -l",
+                                script: "ssh -i ${env.JENKINS_PRIVATE_KEY} ubuntu@${env.PRODUCTION_IP} netstat -an | grep -E \":443|:80\" | grep -v \":8080\" | grep -E \"ESTABLISHED|CLOSING\" | wc -l",
                                 returnStdout: true
                             ).trim()
                             while(NUMBER_OF_CONNECTIONS > 0) {
                                 NUMBER_OF_CONNECTIONS = sh (
-                                    script: "ssh -i ${JENKINS_PRIVATE_KEY} ubuntu@${PRODUCTION_IP} netstat -an | grep -E \":443|:80\" | grep -v \":8080\" | grep -E \"ESTABLISHED|CLOSING\" | wc -l",
+                                    script: "ssh -i ${env.JENKINS_PRIVATE_KEY} ubuntu@${env.PRODUCTION_IP} netstat -an | grep -E \":443|:80\" | grep -v \":8080\" | grep -E \"ESTABLISHED|CLOSING\" | wc -l",
                                     returnStdout: true
                                 ).trim()
                                 sleep (time:1)
