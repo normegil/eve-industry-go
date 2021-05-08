@@ -15,7 +15,7 @@ def builtDockerImage
 pipeline {
     agent none
     environment {
-        IPV4_REGEX = '^([0-9]{1,3}\.){3}[0-9]{1,3}$'
+        IPV4_REGEX = '^([0-9]{1,3}\\.){3}[0-9]{1,3}$'
 
         XDG_CACHE_HOME = '/tmp/.cache'
         VM_IMAGE_NAME = 'evevulcan'
