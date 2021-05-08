@@ -164,6 +164,7 @@ pipeline {
             agent none
             steps {
                 input message: "Launch integration tests & performance tests ?"
+                milestone 1
             }
         }
         stage('Create VM Image') {
@@ -178,7 +179,7 @@ pipeline {
                 }
             }
         }
-        stage('Launch test VM') {
+        stage('Test VM: Launch') {
             agent any
             steps {
                 withCredentials([usernamePassword(credentialsId: 'OpenstackOVH', usernameVariable: 'OS_USERNAME', passwordVariable: 'OS_PASSWORD')]) {
@@ -201,10 +202,19 @@ pipeline {
                 sh 'echo "Performance tests"'
             }
         }
+        stage('Test VM: Delete') {
+            agent any
+            steps {
+                script {
+                    sh "openstack server delete ${env.VM_TEST_SERVER_NAME}-${env.BUILD_NUMBER}"
+                }
+            }
+        }
         stage('Release to production ?') {
             agent none
             steps {
                input message: "Release new code to production ?"
+               milestone 2
             }
         }
         stage('Release') {
