@@ -309,5 +309,11 @@ pipeline {
                 cleanWs()
             }
         }
+        unstable {
+            mail from: 'jenkins@ci.normegil.be', to: "mail@normegil.be", subject: "Unstable: Job ${JOB_NAME} - ${env.BUILD_NUMBER}", body: "The job ${JOB_NAME} (${env.BUILD_NUMBER}) is unstable. Please check ${env.JENKINS_URL}/blue/organizations/jenkins/${JOB_NAME}/detail/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/pipeline."
+        }
+        failure {
+            mail from: 'jenkins@ci.normegil.be', to: "mail@normegil.be", subject: "Error: Job ${JOB_NAME} - ${env.BUILD_NUMBER}", body: "The job ${JOB_NAME} (${env.BUILD_NUMBER}) is in error. Please check ${env.JENKINS_URL}/blue/organizations/jenkins/${JOB_NAME}/detail/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/pipeline."
+        }
     }
 }
