@@ -46,7 +46,7 @@ pipeline {
                 stage('Lint Vue code') {
                     agent any
                     tools {
-                        node '14.16.1'
+                        nodejs '14.16.1'
                     }
                     steps {
                         dir("ui/web") {
@@ -86,7 +86,7 @@ pipeline {
             agent any
             tools {
                 go '1.16.3'
-                node '14.16.1'
+                nodejs '14.16.1'
             }
             steps {
                 sh 'go generate ./...'
