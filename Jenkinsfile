@@ -43,6 +43,18 @@ pipeline {
                         sh 'bin/golangci-lint run'
                     }
                 }
+                stage('Lint Vue code') {
+                    agent any
+                    tools {
+                        node '14.16.1'
+                    }
+                    steps {
+                        dir("ui/web") {
+                            sh 'npm install'
+                            sh 'npm run lint'
+                        }
+                    }
+                }
                 stage('Lint Packer configuration') {
                     agent any
                     steps {
@@ -68,6 +80,16 @@ pipeline {
                         sh 'go test ./...'
                     }
                 }
+            }
+        }
+        stage('Generate code') {
+            agent any
+            tools {
+                go '1.16.3'
+                node '14.16.1'
+            }
+            steps {
+                sh 'go generate ./...'
             }
         }
         stage('Build code') {
