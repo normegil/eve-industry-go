@@ -53,6 +53,12 @@ pipeline {
                         }
                     }
                 }
+                stage('Lint Ansible configurations') {
+                    agent any
+                    steps {
+                        sh 'ansible-lint */***'
+                    }
+                }
                 stage('Test') {
                     agent any
                     tools {
