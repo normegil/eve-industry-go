@@ -35,6 +35,7 @@ pipeline {
         stage('Generate code') {
             agent any
             tools {
+                go '1.16.3'
                 nodejs '14.16.1'
             }
             steps {
