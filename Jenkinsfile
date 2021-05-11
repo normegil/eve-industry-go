@@ -18,6 +18,7 @@ pipeline {
         IPV4_REGEX = '^([0-9]{1,3}\\.){3}[0-9]{1,3}$'
 
         XDG_CACHE_HOME = '/tmp/.cache'
+        FRONTEND_FOLDER = 'ui/web'
         VM_IMAGE_NAME = 'evevulcan'
         SERVER_NAME = 'evevulcan'
         // Openstack
@@ -32,12 +33,14 @@ pipeline {
     }
     stages {
         stage('Generate code') {
-                agent any
+            agent any
             tools {
-                go '1.16.3'
                 nodejs '14.16.1'
             }
             steps {
+                dir(env.FRONTEND_FOLDER) {
+                    sh 'npm install'
+                }
                 sh 'go generate ./...'
             }
         }
@@ -59,7 +62,7 @@ pipeline {
                         nodejs '14.16.1'
                     }
                     steps {
-                        dir("ui/web") {
+                        dir(env.FRONTEND_FOLDER) {
                             sh 'npm install'
                             sh 'npm run lint'
                         }
