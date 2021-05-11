@@ -31,6 +31,16 @@ pipeline {
         VM_TEST_SERVER_FLAVOR = 's1-2'
     }
     stages {
+        stage('Generate code') {
+                agent any
+            tools {
+                go '1.16.3'
+                nodejs '14.16.1'
+            }
+            steps {
+                sh 'go generate ./...'
+            }
+        }
         stage('Validate code') {
             parallel {
                 stage('Lint Go code') {
@@ -80,16 +90,6 @@ pipeline {
                         sh 'go test ./...'
                     }
                 }
-            }
-        }
-        stage('Generate code') {
-            agent any
-            tools {
-                go '1.16.3'
-                nodejs '14.16.1'
-            }
-            steps {
-                sh 'go generate ./...'
             }
         }
         stage('Build code') {
