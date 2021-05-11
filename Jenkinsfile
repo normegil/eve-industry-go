@@ -107,7 +107,7 @@ pipeline {
                     linuxBuildTargets.each { target ->
                         builds["linux-"+target] = {
                             stage("Build Linux - ${target}") {
-                                sh "GOOS=linux GOARCH=${target} go build -o evevulcan-linux-${target} ./..."
+                                sh "GOOS=linux GOARCH=${target} go build -o evevulcan-linux-${target} ."
                                 stash name: "evevulcan-linux-${target}", allowEmpty: false, includes: "evevulcan-linux-${target}"
                             }
                         }
@@ -115,7 +115,7 @@ pipeline {
                     windowsBuildTargets.each { target ->
                         builds["windows-"+target] = {
                             stage("Build Windows - ${target}") {
-                                sh "GOOS=windows GOARCH=${target} go build -o evevulcan-windows-${target}.exe ./..."
+                                sh "GOOS=windows GOARCH=${target} go build -o evevulcan-windows-${target}.exe ."
                                 stash name: "evevulcan-windows-${target}", allowEmpty: false, includes: "evevulcan-windows-${target}.exe"
                             }
                         }
