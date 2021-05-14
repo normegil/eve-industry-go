@@ -3,17 +3,18 @@
 package main_test
 
 import (
-	"fmt"
-	"net/http"
+	"flag"
 	"testing"
+
+	"github.com/go-rod/rod"
 )
 
-func TestHttpServer(t *testing.T) {
-	resp, err := http.Get("http://localhost:18080")
-	if err != nil {
-		t.Fatal(fmt.Errorf("Querying server: %w", err))
-	}
-	if http.StatusOK != resp.StatusCode {
-		t.Error(fmt.Errorf("Wrong status %d: %w", resp.StatusCode, err))
+var address = flag.String("address", "localhost:18080", "Address to the server to test")
+
+func TestUI(t *testing.T) {
+	page := rod.New().MustConnect().MustPage("http://" + *address).MustWaitLoad()
+	attribute := page.MustElement("#app > img:nth-child(1)").MustAttribute("alt")
+	if *attribute != "Vue logo" {
+		t.Errorf("Attribute 'alt' with wrong value '%s'", *attribute)
 	}
 }

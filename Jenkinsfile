@@ -144,7 +144,7 @@ pipeline {
             steps {
                 script {
                     builtDockerImage.withRun('-p 18080:18080') {
-                        sh 'go test --tags=acceptance ./...'
+                        sh 'go test --tags=acceptance ./... --address "localhost:18080"'
                     }
                 }
             }
