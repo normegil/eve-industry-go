@@ -115,9 +115,11 @@
     "scrollable": "Scrollable",
     "responsive": "Responsive",
     "manufacturing": "Manufacturing",
-    "second-menu": "Second Menu",
-    "second": "Second",
-    "start": "Start",
+    "research": "Research",
+    "invention": "Invention",
+    "market": "Market",
+    "settings": "Settings",
+    "myblueprints": "My Blueprints",
     "single": "Single"
   },
   "dashboards": {

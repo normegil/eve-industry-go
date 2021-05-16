@@ -21,22 +21,22 @@ const routes = [
         path: "manufacturing",
         component: () =>
           import(/* webpackChunkName: "manufacturing" */ "./views/app/manufacturing"),
-        redirect: `${adminRoot}/manufacturing/start`,
+        redirect: `${adminRoot}/manufacturing/myblueprints`,
         children: [
           {
-            path: 'start',
-            component: () => import(/* webpackChunkName: "manufacturing" */ './views/app/manufacturing/Start')
+            path: 'myblueprints',
+            component: () => import(/* webpackChunkName: "manufacturing" */ './views/app/manufacturing/MyBlueprints')
             // meta: { roles: [UserRole.Admin, UserRole.Editor] },
           }
         ]
       },
       {
-        path: "second-menu",
+        path: "research",
         component: () =>
-          import(/* webpackChunkName: "second-menu" */ "./views/app/second-menu"),
-        redirect: `${adminRoot}/second-menu/second`,
+          import(/* webpackChunkName: "research" */ "./views/app/research"),
+        redirect: `${adminRoot}/research/invention`,
         children: [
-          { path: 'second', component: () => import(/* webpackChunkName: "manufacturing" */ './views/app/second-menu/Second') }
+          { path: 'invention', component: () => import(/* webpackChunkName: "manufacturing" */ './views/app/research/Invention') }
         ]
       },
 

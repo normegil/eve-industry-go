@@ -7,24 +7,36 @@ const data = [{
   label: "menu.manufacturing",
   to: `${adminRoot}/manufacturing`,
   subs: [{
-    icon: "simple-icon-paper-plane",
-    label: "menu.start",
-    to: `${adminRoot}/manufacturing/start`,
+    icon: "iconsminds-files",
+    label: "menu.myblueprints",
+    to: `${adminRoot}/manufacturing/myblueprints`,
     // roles: [UserRole.Admin, UserRole.Editor],
   },
   ]
 },
 {
-  id: "second-menu",
+  id: "research",
   icon: "iconsminds-chemical",
-  label: "menu.second-menu",
-  to: `${adminRoot}/second-menu`,
+  label: "menu.research",
+  to: `${adminRoot}/research`,
   subs: [{
     icon: "simple-icon-paper-plane",
-    label: "menu.second",
-    to: `${adminRoot}/second-menu/second`,
+    label: "menu.invention",
+    to: `${adminRoot}/research/invention`,
   },
   ]
+},
+{
+  id: "market",
+  icon: "iconsminds-line-chart-1",
+  label: "menu.market",
+  to: `${adminRoot}/market`
+},
+{
+  id: "settings",
+  icon: "iconsminds-gear",
+  label: "menu.settings",
+  to: `${adminRoot}/settings`
 },
 {
   id: "pages",
@@ -55,18 +67,5 @@ const data = [{
   }
   ]
 },
-{
-  id: "single",
-  icon: "iconsminds-three-arrow-fork",
-  label: "menu.single",
-  to: `${adminRoot}/single`,
-},
-{
-  id: "docs",
-  icon: "iconsminds-library",
-  label: "menu.docs",
-  to: "https://piaf-vue-docs.coloredstrategies.com/",
-  newWindow: true
-}
 ];
 export default data;
