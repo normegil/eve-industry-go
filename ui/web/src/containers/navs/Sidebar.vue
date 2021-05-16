@@ -139,7 +139,7 @@ export default {
       const currentParentUrl = this.$route.path
         .split("/")
         .filter((x) => x !== "")[1];
-      if (currentParentUrl !== undefined || currentParentUrl !== null) {
+      if (currentParentUrl !== undefined && currentParentUrl !== null) {
         this.selectedParentMenu = currentParentUrl.toLowerCase();
       } else {
         this.selectedParentMenu = "dashboards";
@@ -325,7 +325,7 @@ export default {
     $route(to, from) {
       if (to.path !== from.path) {
         const toParentUrl = to.path.split("/").filter((x) => x !== "")[1];
-        if (toParentUrl !== undefined || toParentUrl !== null) {
+        if (toParentUrl !== undefined && toParentUrl !== null) {
           this.selectedParentMenu = toParentUrl.toLowerCase();
         } else {
           this.selectedParentMenu = "dashboards";
