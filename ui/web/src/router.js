@@ -10,7 +10,7 @@ const routes = [
   {
     path: adminRoot,
     component: () => import(/* webpackChunkName: "app" */ "./views/app"),
-    redirect: `${adminRoot}/piaf`,
+    redirect: `${adminRoot}/manufacturing`,
     meta: { loginRequired: true },
     /*
    define with Authorization :
@@ -18,14 +18,14 @@ const routes = [
    */
     children: [
       {
-        path: "piaf",
+        path: "manufacturing",
         component: () =>
-          import(/* webpackChunkName: "piaf" */ "./views/app/piaf"),
-        redirect: `${adminRoot}/piaf/start`,
+          import(/* webpackChunkName: "manufacturing" */ "./views/app/manufacturing"),
+        redirect: `${adminRoot}/manufacturing/start`,
         children: [
           {
             path: 'start',
-            component: () => import(/* webpackChunkName: "piaf" */ './views/app/piaf/Start')
+            component: () => import(/* webpackChunkName: "manufacturing" */ './views/app/manufacturing/Start')
             // meta: { roles: [UserRole.Admin, UserRole.Editor] },
           }
         ]
@@ -36,7 +36,7 @@ const routes = [
           import(/* webpackChunkName: "second-menu" */ "./views/app/second-menu"),
         redirect: `${adminRoot}/second-menu/second`,
         children: [
-          { path: 'second', component: () => import(/* webpackChunkName: "piaf" */ './views/app/second-menu/Second') }
+          { path: 'second', component: () => import(/* webpackChunkName: "manufacturing" */ './views/app/second-menu/Second') }
         ]
       },
 

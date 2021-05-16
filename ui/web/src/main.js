@@ -8,7 +8,6 @@ import router from './router'
 import store from './store'
 // Multi Language Add
 import en from './locales/en.json'
-import es from './locales/es.json'
 import VueI18n from 'vue-i18n'
 import { firebaseConfig } from './constants/config'
 // Notification Component Add
@@ -30,7 +29,7 @@ import { getCurrentLanguage } from './utils'
 
 Vue.use(BootstrapVue);
 Vue.use(VueI18n);
-const messages = { en: en, es: es };
+const messages = { en: en };
 const locale = getCurrentLanguage();
 const i18n = new VueI18n({
   locale: locale,

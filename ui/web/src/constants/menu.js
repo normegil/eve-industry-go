@@ -2,14 +2,14 @@ import { adminRoot } from "./config";
 import { UserRole } from "../utils/auth.roles";
 
 const data = [{
-  id: "piaf",
-  icon: "iconsminds-shop",
-  label: "menu.piaf",
-  to: `${adminRoot}/piaf`,
+  id: "Manufacturing",
+  icon: "iconsminds-factory",
+  label: "menu.manufacturing",
+  to: `${adminRoot}/manufacturing`,
   subs: [{
     icon: "simple-icon-paper-plane",
     label: "menu.start",
-    to: `${adminRoot}/piaf/start`,
+    to: `${adminRoot}/manufacturing/start`,
     // roles: [UserRole.Admin, UserRole.Editor],
   },
   ]
