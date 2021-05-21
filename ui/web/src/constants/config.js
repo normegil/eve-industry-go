@@ -12,9 +12,7 @@ export const menuHiddenBreakpoint = 768
 export const defaultLocale = 'en'
 export const defaultDirection = 'ltr'
 export const localeOptions = [
-  { id: 'en', name: 'English LTR', direction: 'ltr' },
-  { id: 'es', name: 'Español', direction: 'ltr' },
-  { id: 'enrtl', name: 'English RTL', direction: 'rtl' }
+  { id: 'en', name: 'English LTR', direction: 'ltr' }
 ]
 
 export const firebaseConfig = {
@@ -32,13 +30,13 @@ export const firebaseConfig = {
 
 export const currentUser = {
   id: 1,
-  title: 'Sarah Kortney',
+  title: 'Anonymous',
   img: '/assets/img/profiles/l-1.jpg',
   date: 'Last seen today 15:24',
-  role: UserRole.Admin
+  role: UserRole.User
 }
 
-export const isAuthGuardActive = false;
+export const isAuthGuardActive = true;
 export const themeRadiusStorageKey = 'theme_radius'
 export const themeSelectedColorStorageKey = 'theme_selected_color'
 export const defaultColor = 'light.blueolympic'

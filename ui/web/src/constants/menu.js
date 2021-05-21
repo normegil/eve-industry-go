@@ -6,11 +6,11 @@ const data = [{
   icon: "iconsminds-factory",
   label: "menu.manufacturing",
   to: `${adminRoot}/manufacturing`,
+  roles: [UserRole.Admin, UserRole.User],
   subs: [{
     icon: "iconsminds-files",
     label: "menu.myblueprints",
     to: `${adminRoot}/manufacturing/myblueprints`,
-    // roles: [UserRole.Admin, UserRole.Editor],
   },
   ]
 },
@@ -19,6 +19,7 @@ const data = [{
   icon: "iconsminds-chemical",
   label: "menu.research",
   to: `${adminRoot}/research`,
+  roles: [UserRole.Admin, UserRole.User],
   subs: [{
     icon: "simple-icon-paper-plane",
     label: "menu.invention",
@@ -30,6 +31,7 @@ const data = [{
   id: "market",
   icon: "iconsminds-line-chart-1",
   label: "menu.market",
+  roles: [UserRole.Admin],
   to: `${adminRoot}/market`
 },
 {
@@ -43,6 +45,7 @@ const data = [{
   icon: "iconsminds-digital-drawing",
   label: "menu.pages",
   to: "/user/login",
+  roles: [UserRole.Admin],
   subs: [{
     icon: "simple-icon-user-following",
     label: "menu.login",

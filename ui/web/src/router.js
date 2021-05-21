@@ -12,10 +12,6 @@ const routes = [
     component: () => import(/* webpackChunkName: "app" */ "./views/app"),
     redirect: `${adminRoot}/manufacturing`,
     meta: { loginRequired: true },
-    /*
-   define with Authorization :
-   meta: { loginRequired: true, roles: [UserRole.Admin, UserRole.Editor] },
-   */
     children: [
       {
         path: "manufacturing",
@@ -25,8 +21,8 @@ const routes = [
         children: [
           {
             path: 'myblueprints',
-            component: () => import(/* webpackChunkName: "manufacturing" */ './views/app/manufacturing/MyBlueprints')
-            // meta: { roles: [UserRole.Admin, UserRole.Editor] },
+            component: () => import(/* webpackChunkName: "manufacturing" */ './views/app/manufacturing/MyBlueprints'),
+            meta: { roles: [UserRole.Admin, UserRole.Editor] },
           }
         ]
       },
@@ -36,16 +32,13 @@ const routes = [
           import(/* webpackChunkName: "research" */ "./views/app/research"),
         redirect: `${adminRoot}/research/invention`,
         children: [
-          { path: 'invention', component: () => import(/* webpackChunkName: "manufacturing" */ './views/app/research/Invention') }
+          {
+            path: 'invention',
+            component: () => import(/* webpackChunkName: "manufacturing" */ './views/app/research/Invention'),
+            meta: { roles: [UserRole.Admin, UserRole.Editor] }
+          }
         ]
       },
-
-
-      {
-        path: "single",
-        component: () =>
-          import(/* webpackChunkName: "single" */ "./views/app/single")
-      }
     ]
   },
   {
