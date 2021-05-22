@@ -1,3 +1,5 @@
+github.com/go-chi/chi/v5 v5.0.3 h1:khYQBdPivkYG1s1TAzDQG1f6eX4kD2TItYVZexL5rS4=
+github.com/go-chi/chi/v5 v5.0.3/go.mod h1:DslCQbL2OYiznFReuXYUmQ2hGd1aDpCnlMNITLSKoi8=
 github.com/go-rod/rod v0.99.1 h1:8EV00XUiWL0PElUC/8V1pEuApQE0n6BIVmQt9cQyVQc=
 github.com/go-rod/rod v0.99.1/go.mod h1:h9igqSGReLmOWyHtdf0AtUd0mdkHFu3gFwBeV+stleM=
 github.com/ysmood/goob v0.3.0 h1:XZ51cZJ4W3WCoCiUktixzMIQF86W7G5VFL4QQ/Q2uS0=

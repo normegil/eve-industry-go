@@ -3,6 +3,7 @@ package main
 import (
 	"embed"
 	"fmt"
+	"github.com/go-chi/chi/v5"
 	"io/fs"
 	"log"
 	"net/http"
@@ -16,9 +17,13 @@ func main() {
 	if err != nil {
 		panic(fmt.Errorf("load frontend: %w", err))
 	}
+
+	r := chi.NewRouter()
+	r.Mount("/", http.FileServer(&VueFileSystem{webFrontend}))
+
 	server := http.Server{
 		Addr:    ":18080",
-		Handler: http.FileServer(webFrontend),
+		Handler: r,
 	}
 	log.Printf("server listening: %s", server.Addr)
 	if err := server.ListenAndServe(); nil != err {
