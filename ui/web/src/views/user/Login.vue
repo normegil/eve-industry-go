@@ -10,7 +10,9 @@
                     <span class="logo-single" />
                 </router-link>
 
-                <img src="/assets/img/login/eve-sso-login-white-large.png" />
+                <a href="/auth/login">
+                  <img src="/assets/img/login/eve-sso-login-white-large.png" />
+                </a>
             </div>
         </b-card>
     </b-colxx>

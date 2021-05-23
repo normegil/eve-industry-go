@@ -55,22 +55,6 @@ const routes = [
         component: () =>
           import(/* webpackChunkName: "user" */ "./views/user/Login")
       },
-      {
-        path: "register",
-        component: () =>
-          import(/* webpackChunkName: "user" */ "./views/user/Register")
-      },
-      {
-        path: "forgot-password",
-        component: () =>
-          import(/* webpackChunkName: "user" */ "./views/user/ForgotPassword")
-      },
-      {
-        path: "reset-password",
-        component: () =>
-          import(/* webpackChunkName: "user" */ "./views/user/ResetPassword")
-      },
-
     ]
   },
   {
