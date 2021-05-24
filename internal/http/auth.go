@@ -1,84 +1,46 @@
 package http
 
 import (
-	"encoding/json"
 	"fmt"
-	"github.com/normegil/evevulcan/internal/config"
+	"github.com/normegil/evevulcan/internal/db"
 	"github.com/normegil/evevulcan/internal/eveapi"
-	"github.com/rs/zerolog/log"
-	"io"
 	"net/http"
 	"net/url"
-	"strings"
 )
 
 type authHandler struct {
-	DomainName   string
-	Client       config.ClientAuth
-	RedirectURL  url.URL
+	AppBaseURL   url.URL
+	EveAPI       eveapi.API
 	ErrorHandler errorHandler
+	DB           *db.DB
 }
 
-func (a authHandler) login(w http.ResponseWriter, r *http.Request) {
-	responseType := "code"
-	scopes := []string{
-		"esi-characters.read_blueprints.v1",
+func (a *authHandler) login(w http.ResponseWriter, r *http.Request) {
+	loginURL, err := a.EveAPI.LoginURL()
+	if err != nil {
+		a.ErrorHandler.handle(w, err)
+		return
 	}
-	scopeAsStr := strings.Join(scopes, " ")
-	loginURL := fmt.Sprintf("https://%s/oauth/authorize?response_type=%s&redirect_uri=%s&client_id=%s&scope=%s", a.DomainName, responseType, a.RedirectURL.String(), a.Client.ID, scopeAsStr)
-	http.Redirect(w, r, loginURL, http.StatusFound)
+	http.Redirect(w, r, loginURL.String(), http.StatusFound)
 }
 
-type identityResponse struct {
-	CharacterID   int64  `json:"CharacterID"`
-	CharacterName string `json:"CharacterName"`
-}
-
-func (a authHandler) callback(w http.ResponseWriter, r *http.Request) {
+func (a *authHandler) callback(w http.ResponseWriter, r *http.Request) {
 	code := r.URL.Query()["code"][0]
 
-	bodyCode, err := eveapi.TokenRequestBodyByCode(code)
+	identity, accessToken, err := a.EveAPI.RequestIdentity(code)
 	if err != nil {
-		a.ErrorHandler.handle(w, fmt.Errorf("creating token request body: %w", err))
+		a.ErrorHandler.handle(w, fmt.Errorf("requesting identity: %w", err))
 		return
 	}
 
-	tokens, err := eveapi.TokenRequest(a.DomainName, a.Client, bodyCode)
-	if err != nil {
-		a.ErrorHandler.handle(w, fmt.Errorf("request tokens: %w", err))
+	if err = a.DB.InsertOrUpdateIdentity(*identity); nil != err {
+		a.ErrorHandler.handle(w, fmt.Errorf("inserting loaded identity: %w", err))
+		return
+	}
+	if err = a.DB.ReplaceAccessToken(*accessToken); err != nil {
+		a.ErrorHandler.handle(w, fmt.Errorf("replacing access token: %w", err))
 		return
 	}
 
-	identity, err := requestIdentity(a.DomainName, *tokens)
-	if err != nil {
-		a.ErrorHandler.handle(w, fmt.Errorf("request identity: %w", err))
-	}
-
-	log.Printf("%+v", identity)
-	// Store in MongoDB
-}
-
-func requestIdentity(domainName string, tokens eveapi.Tokens) (*identityResponse, error) {
-	identityURL := fmt.Sprintf("https://%s/oauth/verify", domainName)
-	identityRequest, err := http.NewRequest("GET", identityURL, strings.NewReader(""))
-	if err != nil {
-		return nil, fmt.Errorf("creating identity url: %w", err)
-	}
-	identityRequest.Header.Add("Authorization", "Bearer "+tokens.AccessToken)
-
-	identityResp, err := http.DefaultClient.Do(identityRequest)
-	if err != nil {
-		return nil, fmt.Errorf("identity request: %w", err)
-	}
-
-	identityBody, err := io.ReadAll(identityResp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("read identity request body: %w", err)
-	}
-
-	identity := &identityResponse{}
-	if err = json.Unmarshal(identityBody, identity); nil != err {
-		return nil, fmt.Errorf("unmarshall identity: %w", err)
-	}
-	return identity, nil
+	http.Redirect(w, r, a.AppBaseURL.String(), http.StatusFound)
 }
