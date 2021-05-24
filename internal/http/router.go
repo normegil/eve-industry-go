@@ -15,12 +15,13 @@ func Routes(frontend http.FileSystem) (http.Handler, error) {
 		return nil, fmt.Errorf("loading eve sso rediret url: %w", err)
 	}
 	auth := authHandler{
-		DomainName:  config.EveSSODomainName(),
-		ClientID:    config.EveSSOClientID(),
-		RedirectURL: *redirectURL,
+		DomainName:   config.EveSSODomainName(),
+		Client:       config.EveSSOClientAuth(),
+		RedirectURL:  *redirectURL,
+		ErrorHandler: errorHandler{},
 	}
 	r.Get("/auth/login", auth.login)
-	r.Get("/auth/callback", authCallback)
+	r.Get("/auth/callback", auth.callback)
 
 	r.Mount("/", http.FileServer(&vueFileSystem{FileSystem: frontend}))
 

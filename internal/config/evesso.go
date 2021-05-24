@@ -12,8 +12,16 @@ func EveSSODomainName() string {
 	return os.Getenv(ssoPrefix + "DOMAIN_NAME")
 }
 
-func EveSSOClientID() string {
-	return os.Getenv(ssoPrefix + "CLIENT_ID")
+type ClientAuth struct {
+	ID     string
+	Secret string
+}
+
+func EveSSOClientAuth() ClientAuth {
+	return ClientAuth{
+		ID:     os.Getenv(ssoPrefix + "CLIENT_ID"),
+		Secret: os.Getenv(ssoPrefix + "CLIENT_SECRET"),
+	}
 }
 
 func EveSSORedirectURL() (*url.URL, error) {
