@@ -1,26 +1,21 @@
 package http
 
 import (
-	"fmt"
 	"github.com/go-chi/chi/v5"
-	"github.com/normegil/evevulcan/internal/config"
-	"go.mongodb.org/mongo-driver/mongo"
+	"github.com/normegil/evevulcan/internal/db"
+	"github.com/normegil/evevulcan/internal/eveapi"
 	"net/http"
+	"net/url"
 )
 
-func Routes(frontend http.FileSystem, database *mongo.Database) (http.Handler, error) {
+func Routes(appBaseURL url.URL, frontend http.FileSystem, database *db.DB, api eveapi.API) (http.Handler, error) {
 	r := chi.NewRouter()
 
-	redirectURL, err := config.EveSSORedirectURL()
-	if err != nil {
-		return nil, fmt.Errorf("loading eve sso rediret url: %w", err)
-	}
 	auth := &authHandler{
-		SSODomainName: config.EveSSODomainName(),
-		Client:        config.EveSSOClientAuth(),
-		RedirectURL:   *redirectURL,
-		ErrorHandler:  errorHandler{},
-		Mongo:         database,
+		AppBaseURL:   appBaseURL,
+		EveAPI:       api,
+		ErrorHandler: errorHandler{},
+		DB:           database,
 	}
 	r.Get("/auth/login", auth.login)
 	r.Get("/auth/callback", auth.callback)

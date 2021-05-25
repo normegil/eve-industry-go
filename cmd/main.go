@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/normegil/evevulcan/internal/config"
+	"github.com/normegil/evevulcan/internal/db"
+	"github.com/normegil/evevulcan/internal/eveapi"
 	"github.com/normegil/evevulcan/internal/http"
 	"github.com/normegil/evevulcan/ui/web"
 	"github.com/rs/zerolog/log"
@@ -27,9 +29,15 @@ func main() {
 			log.Error().Err(err).Msg("Could not close resource")
 		}
 	}()
-	database := client.Database("eve-vulcan")
+	mongoDatabase := client.Database("eve-vulcan")
+	dbInstance := db.New(mongoDatabase)
+	api := eveapi.API{
+		SSODomainName: config.EveSSODomainName(),
+		Client:        config.EveSSOClientAuth(),
+		RedirectURL:   *config.EveSSORedirectURL(),
+	}
 
-	routes, err := http.Routes(webFrontend, database)
+	routes, err := http.Routes(*config.AppBaseURL(), webFrontend, dbInstance, api)
 	if err != nil {
 		panic(fmt.Errorf("load routes: %w", err))
 	}

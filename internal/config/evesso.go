@@ -24,6 +24,10 @@ func EveSSOClientAuth() ClientAuth {
 	}
 }
 
-func EveSSORedirectURL() (*url.URL, error) {
-	return url.Parse(os.Getenv(ssoPrefix + "REDIRECT_URL"))
+func EveSSORedirectURL() *url.URL {
+	redirectURL, err := url.Parse(os.Getenv(ssoPrefix + "REDIRECT_URL"))
+	if err != nil {
+		panic(err)
+	}
+	return redirectURL
 }
