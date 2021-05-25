@@ -8,11 +8,11 @@ import (
 	"time"
 )
 
-type errorHandler struct {
+type ErrorHandler struct {
 	LogUserError bool
 }
 
-func (h errorHandler) handle(w http.ResponseWriter, err error) {
+func (h ErrorHandler) Handle(w http.ResponseWriter, err error) {
 	httpError := &Error{}
 	if !errors.As(err, httpError) {
 		httpError = &Error{

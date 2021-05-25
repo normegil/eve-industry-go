@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/alexedwards/scs/v2"
 	"github.com/normegil/evevulcan/internal/config"
 	"github.com/normegil/evevulcan/internal/db"
 	"github.com/normegil/evevulcan/internal/eveapi"
@@ -38,11 +39,19 @@ func main() {
 		RedirectURL:   *config.EveSSORedirectURL(),
 	}
 
-	routes, err := http.Routes(*config.AppBaseURL(), webFrontend, dbInstance, api)
+	sessionManager := scs.New()
+	routes, err := http.Routes(*config.AppBaseURL(), webFrontend, dbInstance, api, sessionManager)
 	if err != nil {
 		panic(fmt.Errorf("load routes: %w", err))
 	}
 
+	routes = middleware.SessionHandler{
+		SessionManager: sessionManager,
+		DB:             dbInstance,
+		ErrHandler:     http.ErrorHandler{},
+		Handler:        routes,
+	}
+	routes = middleware.AnonymousUserSetter{Handler: routes}
 	routes = middleware.RequestLogger{Handler: routes}
 
 	server := stdhttp.Server{

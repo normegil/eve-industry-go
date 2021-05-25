@@ -5,3 +5,11 @@ type Identity struct {
 	Name         string `json:"name" bson:"name"`
 	RefreshToken string `json:"refresh_token" bson:"refresh_token"`
 }
+
+func IdentityAnonymous() Identity {
+	return Identity{
+		ID:           -1,
+		Name:         "anonymous",
+		RefreshToken: "",
+	}
+}
