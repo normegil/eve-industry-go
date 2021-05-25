@@ -7,6 +7,7 @@ import (
 	"github.com/normegil/evevulcan/internal/db"
 	"github.com/normegil/evevulcan/internal/eveapi"
 	"github.com/normegil/evevulcan/internal/http"
+	"github.com/normegil/evevulcan/internal/http/middleware"
 	"github.com/normegil/evevulcan/ui/web"
 	"github.com/rs/zerolog/log"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -41,6 +42,9 @@ func main() {
 	if err != nil {
 		panic(fmt.Errorf("load routes: %w", err))
 	}
+
+	routes = middleware.RequestLogger{Handler: routes}
+
 	server := stdhttp.Server{
 		Addr:    ":18080",
 		Handler: routes,
