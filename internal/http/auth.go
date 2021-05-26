@@ -48,7 +48,6 @@ func (a *authHandler) callback(w http.ResponseWriter, r *http.Request) {
 		a.ErrorHandler.Handle(w, fmt.Errorf("could not renew session token: %w", err))
 		return
 	}
-	a.SessionManager.Put(r.Context(), KeySessionIdentity, identity.ID)
-
+	a.SessionManager.Put(r.Context(), KeySessionIdentityID, identity.ID)
 	http.Redirect(w, r, a.AppBaseURL.String(), http.StatusFound)
 }

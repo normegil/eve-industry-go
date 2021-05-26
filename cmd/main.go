@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/alexedwards/scs/mongodbstore"
 	"github.com/alexedwards/scs/v2"
 	"github.com/normegil/evevulcan/internal/config"
 	"github.com/normegil/evevulcan/internal/db"
@@ -32,6 +33,7 @@ func main() {
 		}
 	}()
 	mongoDatabase := client.Database("eve-vulcan")
+
 	dbInstance := db.New(mongoDatabase)
 	api := eveapi.API{
 		SSODomainName: config.EveSSODomainName(),
@@ -40,17 +42,19 @@ func main() {
 	}
 
 	sessionManager := scs.New()
+	sessionManager.Store = mongodbstore.New(mongoDatabase)
 	routes, err := http.Routes(*config.AppBaseURL(), webFrontend, dbInstance, api, sessionManager)
 	if err != nil {
 		panic(fmt.Errorf("load routes: %w", err))
 	}
 
-	routes = middleware.SessionHandler{
+	routes = middleware.SessionIdentityHandler{
 		SessionManager: sessionManager,
 		DB:             dbInstance,
 		ErrHandler:     http.ErrorHandler{},
 		Handler:        routes,
 	}
+	routes = sessionManager.LoadAndSave(routes)
 	routes = middleware.AnonymousUserSetter{Handler: routes}
 	routes = middleware.RequestLogger{Handler: routes}
 

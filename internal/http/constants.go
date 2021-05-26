@@ -1,4 +1,4 @@
 package http
 
 const KeyIdentity string = "authenticated-identity"
-const KeySessionIdentity = "identity-id"
+const KeySessionIdentityID string = "session-identity-id"
