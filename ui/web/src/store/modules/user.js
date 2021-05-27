@@ -1,61 +1,38 @@
-import 'firebase/auth'
-import {currentUser, isAuthGuardActive} from '../../constants/config'
-import {getCurrentUser} from '../../utils'
+import axios from "axios";
 
 export default {
-  state: {
-    currentUser: null,
-    loginError: null,
-    processing: false,
-    forgotMailSuccess: null,
-    resetPasswordSuccess: null
-  },
-  getters: {
-    currentUser: state => state.currentUser,
-    processing: state => state.processing,
-    loginError: state => state.loginError,
-    forgotMailSuccess: state => state.forgotMailSuccess,
-    resetPasswordSuccess: state => state.resetPasswordSuccess,
-  },
-  mutations: {
-    setUser(state, payload) {
-      state.currentUser = payload
-      state.processing = false
-      state.loginError = null
+    namespaced: true,
+    state: {
+        currentUser: null
     },
-    setLogout(state) {
-      state.currentUser = null
-      state.processing = false
-      state.loginError = null
+    getters: {
+        currentUser: state => state.currentUser,
     },
-    setProcessing(state, payload) {
-      state.processing = payload
-      state.loginError = null
+    mutations: {
+        setUser(state, payload) {
+            state.currentUser = payload
+        },
+        setLogout(state) {
+            state.currentUser = null
+        },
     },
-    setError(state, payload) {
-      state.loginError = payload
-      state.currentUser = null
-      state.processing = false
-    },
-    setForgotMailSuccess(state) {
-      state.loginError = null
-      state.currentUser = null
-      state.processing = false
-      state.forgotMailSuccess = true
-    },
-    setResetPasswordSuccess(state) {
-      state.loginError = null
-      state.currentUser = null
-      state.processing = false
-      state.resetPasswordSuccess = true
-    },
-    clearError(state) {
-      state.loginError = null
+    actions: {
+        loadCurrent: async ({commit}) => {
+            try {
+                let url = window.location + "api/users/current";
+                let response = await axios.get(url);
+                commit("setUser", response.data)
+            } catch (e) {
+                console.error(e)
+            }
+        },
+        signOut: async ({commit}) => {
+            try {
+                let response = await axios.get(window.location + "/auth/sign-out");
+            } catch (e) {
+                console.error(e)
+            }
+            commit("setLogout")
+        }
     }
-  },
-  actions: {
-    signOut({ commit }) {
-
-    }
-  }
 }

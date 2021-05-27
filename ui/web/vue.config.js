@@ -33,7 +33,7 @@ module.exports = {
             args.compilerOptions.whitespace = 'preserve'
           })
   },
-  productionSourceMap: false,
+  productionSourceMap: true,
   assetsDir: './assets/',
   configureWebpack: {
     plugins: [

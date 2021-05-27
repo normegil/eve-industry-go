@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import app from '../main'
+import app from './modules/app'
 import menu from './modules/menu'
 import user from './modules/user'
 import { setCurrentLanguage } from '../utils'
@@ -23,6 +23,7 @@ export default new Vuex.Store({
     }
   },
   modules: {
+    app,
     menu,
     user,
   }

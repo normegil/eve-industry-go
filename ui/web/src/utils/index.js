@@ -148,34 +148,3 @@ export const setCurrentLanguage = (lang) => {
         console.log(">>>> src/utils/index.js : setCurrentLanguage -> error", error)
     }
 }
-
-export const getCurrentUser = async () => {
-    let user;
-    try {
-        let jsonUser;
-        if (sessionStorage.getItem('user') != null) {
-            jsonUser = sessionStorage.getItem('user');
-            user = JSON.parse(jsonUser)
-        } else {
-            let response = await axios.get(location.origin + "/api/users/current")
-            user = response.data
-            setCurrentUser(user)
-        }
-    } catch (error) {
-        console.log(">>>> src/utils/index.js : getCurrentUser -> error", error)
-        user = null;
-    }
-    return user;
-}
-
-export const setCurrentUser = (user) => {
-    try {
-        if (user) {
-            sessionStorage.setItem('user', JSON.stringify(user))
-        } else {
-            sessionStorage.removeItem('user');
-        }
-    } catch (error) {
-        console.log(">>>> src/utils/index.js : setCurrentUser -> error", error)
-    }
-}
