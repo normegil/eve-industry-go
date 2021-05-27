@@ -49,19 +49,16 @@ Vue.component('vue-perfect-scrollbar', vuePerfectScrollbar);
 let router = loadRoutes(store);
 Vue.config.productionTip = false
 
-let vue = new Vue({
-    i18n,
-    router,
-    store,
-    render: h => h(App)
-});
-
 store.dispatch("app/init")
     .then(() => {
-        vue.$mount('#app')
+        console.log(store.getters["user/currentUser"])
+        new Vue({
+            i18n,
+            router,
+            store,
+            render: h => h(App)
+        }).$mount('#app')
     })
     .catch((e) => {
         console.error(e)
     })
-
-export default vue;

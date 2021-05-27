@@ -15,6 +15,7 @@ export default {
     "color-switcher": ColorSwitcher
   },
   beforeMount() {
+    console.log(this.$store.getters["user/currentUser"])
     const direction = getDirection();
     if (direction.isRtl) {
       document.body.classList.add("rtl");

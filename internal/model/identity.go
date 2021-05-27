@@ -6,8 +6,8 @@ type Identity struct {
 	RefreshToken string `json:"refresh_token" bson:"refresh_token"`
 }
 
-func IdentityAnonymous() Identity {
-	return Identity{
+func IdentityAnonymous() *Identity {
+	return &Identity{
 		ID:           -1,
 		Name:         "anonymous",
 		RefreshToken: "",
