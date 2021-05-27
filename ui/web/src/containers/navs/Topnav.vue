@@ -302,7 +302,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      currentUser: "currentUser",
+      currentUser: "user/currentUser",
       menuType: "getMenuType",
       menuClickCount: "getMenuClickCount",
       selectedMenuHasSubItems: "getSelectedMenuHasSubItems"

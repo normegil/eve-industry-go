@@ -51,7 +51,6 @@ Vue.config.productionTip = false
 
 store.dispatch("app/init")
     .then(() => {
-        console.log(store.getters["user/currentUser"])
         new Vue({
             i18n,
             router,
