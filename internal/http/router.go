@@ -12,15 +12,20 @@ import (
 func Routes(appBaseURL url.URL, frontend http.FileSystem, database *db.DB, api eveapi.API, sessionManager *scs.SessionManager) (http.Handler, error) {
 	r := chi.NewRouter()
 
+	errorHandler := ErrorHandler{}
 	auth := &authHandler{
 		AppBaseURL:     appBaseURL,
 		EveAPI:         api,
-		ErrorHandler:   ErrorHandler{},
+		ErrorHandler:   errorHandler,
 		DB:             database,
 		SessionManager: sessionManager,
 	}
 	r.Get("/auth/login", auth.login)
 	r.Get("/auth/callback", auth.callback)
+	r.Get("/auth/sign-out", auth.signout)
+
+	users := UsersHandler{ErrorHandler: errorHandler}
+	r.Get("/api/users/current", users.current)
 
 	r.Mount("/", http.FileServer(&vueFileSystem{FileSystem: frontend}))
 

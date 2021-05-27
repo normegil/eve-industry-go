@@ -51,3 +51,12 @@ func (a *authHandler) callback(w http.ResponseWriter, r *http.Request) {
 	a.SessionManager.Put(r.Context(), KeySessionIdentityID, identity.ID)
 	http.Redirect(w, r, a.AppBaseURL.String(), http.StatusFound)
 }
+
+func (a *authHandler) signout(w http.ResponseWriter, r *http.Request) {
+	if err := a.SessionManager.RenewToken(r.Context()); nil != err {
+		a.ErrorHandler.Handle(w, fmt.Errorf("could not renew session token: %w", err))
+		return
+	}
+	a.SessionManager.Put(r.Context(), KeySessionIdentityID, nil)
+
+}
