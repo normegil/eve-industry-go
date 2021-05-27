@@ -12,7 +12,8 @@ type UsersHandler struct {
 }
 
 func (u UsersHandler) current(w http.ResponseWriter, r *http.Request) {
-	identity := r.Context().Value(KeyIdentity).(model.Identity)
+	identityInterface := r.Context().Value(KeyIdentity)
+	identity := identityInterface.(*model.Identity)
 	if model.IdentityAnonymous().ID == identity.ID {
 		w.WriteHeader(http.StatusUnauthorized)
 		return

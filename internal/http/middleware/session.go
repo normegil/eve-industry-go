@@ -26,7 +26,7 @@ func (s SessionIdentityHandler) ServeHTTP(w stdhttp.ResponseWriter, r *stdhttp.R
 			s.ErrHandler.Handle(w, fmt.Errorf("load identity from session '%d': %w", identityID, err))
 			return
 		}
-		ctx = context.WithValue(r.Context(), http.KeySessionIdentityID, identity)
+		ctx = context.WithValue(r.Context(), http.KeyIdentity, identity)
 	}
 	s.Handler.ServeHTTP(w, r.WithContext(ctx))
 }

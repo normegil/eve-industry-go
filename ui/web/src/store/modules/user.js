@@ -4,7 +4,7 @@ import {getCurrentUser} from '../../utils'
 
 export default {
   state: {
-    currentUser: isAuthGuardActive ? getCurrentUser() : currentUser,
+    currentUser: null,
     loginError: null,
     processing: false,
     forgotMailSuccess: null,
