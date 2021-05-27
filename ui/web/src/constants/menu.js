@@ -39,36 +39,6 @@ const data = [{
   icon: "iconsminds-gear",
   label: "menu.settings",
   to: `${adminRoot}/settings`
-},
-{
-  id: "pages",
-  icon: "iconsminds-digital-drawing",
-  label: "menu.pages",
-  to: "/user/login",
-  roles: [UserRole.Admin],
-  subs: [{
-    icon: "simple-icon-user-following",
-    label: "menu.login",
-    to: "/user/login",
-    newWindow: true
-  }, {
-    icon: "simple-icon-user-follow",
-    label: "menu.register",
-    to: "/user/register",
-    newWindow: true
-  }, {
-    icon: "simple-icon-user-unfollow",
-    label: "menu.forgot-password",
-    to: "/user/forgot-password",
-    newWindow: true
-  },
-  {
-    icon: "simple-icon-user-following",
-    label: "menu.reset-password",
-    to: "/user/reset-password",
-    newWindow: true
-  }
-  ]
-},
+}
 ];
 export default data;
