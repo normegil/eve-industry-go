@@ -1,4 +1,5 @@
 import axios from "axios";
+import {toRole} from "../../utils/auth.roles";
 
 export default {
     namespaced: true,
@@ -21,6 +22,7 @@ export default {
             try {
                 let url = window.location.origin + "/api/users/current";
                 let response = await axios.get(url);
+                response.data.role = toRole(response.data.role)
                 commit("setUser", response.data)
             } catch (e) {
                 if (e.response.status !== 401) {

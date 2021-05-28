@@ -47,8 +47,8 @@
               v-if="message.sender === currentUser.id"
             >
               <img
-                :alt="currentUser.title"
-                :src="currentUser.img"
+                :alt="currentUser.name"
+                :src="currentUser.portraits.url64"
                 class="img-thumbnail border-0 rounded-circle mr-3 list-thumbnail align-self-center xsmall"
               />
               <div class="d-flex flex-grow-1 min-width-zero">
@@ -57,7 +57,7 @@
                 >
                   <div class="min-width-zero">
                     <p class="mb-0 truncate list-item-heading">
-                      {{ currentUser.title }}
+                      {{ currentUser.name }}
                     </p>
                   </div>
                 </div>

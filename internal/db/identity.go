@@ -11,7 +11,7 @@ import (
 func (d DB) LoadIdentity(id int64) (*model.Identity, error) {
 	identitiesCol := d.database.Collection("identities")
 	var found model.Identity
-	err := identitiesCol.FindOne(context.Background(), bson.M{"character_id": id}).Decode(&found)
+	err := identitiesCol.FindOne(context.Background(), bson.M{"id": id}).Decode(&found)
 	if nil != err && mongo.ErrNoDocuments != err {
 		return nil, fmt.Errorf("error when retreiving identity '%d': %w", id, err)
 	}

@@ -23,7 +23,7 @@ export default function loadRoutes(store) {
                         {
                             path: 'myblueprints',
                             component: () => import(/* webpackChunkName: "manufacturing" */ './views/app/manufacturing/MyBlueprints'),
-                            meta: {roles: [UserRole.Admin, UserRole.Editor]},
+                            meta: {roles: [UserRole.User]},
                         }
                     ]
                 },
@@ -36,7 +36,7 @@ export default function loadRoutes(store) {
                         {
                             path: 'invention',
                             component: () => import(/* webpackChunkName: "manufacturing" */ './views/app/research/Invention'),
-                            meta: {roles: [UserRole.Admin, UserRole.Editor]}
+                            meta: {roles: [UserRole.User]}
                         }
                     ]
                 },

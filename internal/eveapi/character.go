@@ -36,10 +36,17 @@ func (a API) RequestIdentity(code string) (*model.Identity, *model.StoredAccessT
 		return nil, nil, fmt.Errorf("request identity: %w", err)
 	}
 
+	portraits, err := a.portraits(identity.CharacterID)
+	if err != nil {
+		return nil, nil, fmt.Errorf("request portraits: %w", err)
+	}
+
 	returnedIdentity := &model.Identity{
 		ID:           identity.CharacterID,
 		Name:         identity.CharacterName,
 		RefreshToken: tokens.RefreshToken,
+		Portraits:    portraits,
+		Role:         "user",
 	}
 	accessToken := &model.StoredAccessToken{
 		CharacterID: identity.CharacterID,
@@ -52,6 +59,13 @@ func (a API) RequestIdentity(code string) (*model.Identity, *model.StoredAccessT
 type identityResponse struct {
 	CharacterID   int64  `json:"CharacterID"`
 	CharacterName string `json:"CharacterName"`
+}
+
+type portraitsResponse struct {
+	Url64  string `json:"px64x64"`
+	Url128 string `json:"px128x128"`
+	Url256 string `json:"px256x256"`
+	Url512 string `json:"px512x512"`
 }
 
 func (a API) identity(tokens model.Tokens) (*identityResponse, error) {
@@ -77,4 +91,33 @@ func (a API) identity(tokens model.Tokens) (*identityResponse, error) {
 		return nil, fmt.Errorf("unmarshall identity: %w", err)
 	}
 	return identity, nil
+}
+
+func (a API) portraits(id int64) (model.Portraits, error) {
+	portraitURL := fmt.Sprintf("https://esi.evetech.net/latest/characters/%d/portrait/", id)
+	portraitRequest, err := http.NewRequest("GET", portraitURL, strings.NewReader(""))
+	if err != nil {
+		return model.Portraits{}, fmt.Errorf("creating portrait request for %d: %w", id, err)
+	}
+
+	resp, err := http.DefaultClient.Do(portraitRequest)
+	if err != nil {
+		return model.Portraits{}, fmt.Errorf("request portraits for %d: %w", id, err)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return model.Portraits{}, fmt.Errorf("read portraits request body: %w", err)
+	}
+
+	portraitsResponse := &portraitsResponse{}
+	if err = json.Unmarshal(body, portraitsResponse); nil != err {
+		return model.Portraits{}, fmt.Errorf("unmarshall portraits: %w", err)
+	}
+	return model.Portraits{
+		URL64:  portraitsResponse.Url64,
+		URL128: portraitsResponse.Url128,
+		URL256: portraitsResponse.Url256,
+		URL512: portraitsResponse.Url512,
+	}, nil
 }
