@@ -9,7 +9,7 @@ import (
 	"net/url"
 )
 
-func Routes(appBaseURL url.URL, frontend http.FileSystem, database *db.DB, api eveapi.API, sessionManager *scs.SessionManager) (http.Handler, error) {
+func Routes(appBaseURL url.URL, frontend http.FileSystem, database *db.DB, api eveapi.SSO, sessionManager *scs.SessionManager) (http.Handler, error) {
 	r := chi.NewRouter()
 
 	errorHandler := ErrorHandler{}

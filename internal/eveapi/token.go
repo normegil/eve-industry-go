@@ -42,8 +42,8 @@ func tokenRequestBodyByRefreshToken(refresh_token string) ([]byte, error) {
 	return body, nil
 }
 
-func (a API) tokenRequest(body []byte) (*model.Tokens, error) {
-	tokenURL := fmt.Sprintf("https://%s/oauth/token", a.SSODomainName)
+func (a SSO) tokenRequest(body []byte) (*model.Tokens, error) {
+	tokenURL := fmt.Sprintf("https://%s/oauth/token", a.DomainName)
 	tokenRequest, err := http.NewRequest("POST", tokenURL, bytes.NewReader(body))
 	if err != nil {
 		return nil, fmt.Errorf("token request: %w", err)

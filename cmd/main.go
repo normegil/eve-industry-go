@@ -35,10 +35,10 @@ func main() {
 	mongoDatabase := client.Database("eve-vulcan")
 
 	dbInstance := db.New(mongoDatabase)
-	api := eveapi.API{
-		SSODomainName: config.EveSSODomainName(),
-		Client:        config.EveSSOClientAuth(),
-		RedirectURL:   *config.EveSSORedirectURL(),
+	api := eveapi.SSO{
+		DomainName:  config.EveSSODomainName(),
+		Client:      config.EveSSOClientAuth(),
+		RedirectURL: *config.EveSSORedirectURL(),
 	}
 
 	sessionManager := scs.New()

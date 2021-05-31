@@ -11,7 +11,7 @@ import (
 
 type authHandler struct {
 	AppBaseURL     url.URL
-	EveAPI         eveapi.API
+	EveAPI         eveapi.SSO
 	ErrorHandler   ErrorHandler
 	DB             *db.DB
 	SessionManager *scs.SessionManager
