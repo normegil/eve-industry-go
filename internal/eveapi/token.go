@@ -42,14 +42,14 @@ func tokenRequestBodyByRefreshToken(refresh_token string) ([]byte, error) {
 	return body, nil
 }
 
-func (a SSO) tokenRequest(body []byte) (*model.Tokens, error) {
-	tokenURL := fmt.Sprintf("https://%s/oauth/token", a.DomainName)
+func (s SSO) tokenRequest(body []byte) (*model.Tokens, error) {
+	tokenURL := fmt.Sprintf("https://%s/oauth/token", s.DomainName)
 	tokenRequest, err := http.NewRequest("POST", tokenURL, bytes.NewReader(body))
 	if err != nil {
 		return nil, fmt.Errorf("token request: %w", err)
 	}
 	tokenRequest.Header.Add("Content-Type", "application/json")
-	tokenRequest.SetBasicAuth(a.Client.ID, a.Client.Secret)
+	tokenRequest.SetBasicAuth(s.Client.ID, s.Client.Secret)
 
 	resp, err := http.DefaultClient.Do(tokenRequest)
 	if err != nil {

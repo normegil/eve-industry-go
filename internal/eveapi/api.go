@@ -1,17 +1,10 @@
 package eveapi
 
 import (
-	"github.com/normegil/evevulcan/internal/config"
 	"github.com/normegil/evevulcan/internal/db"
 	"github.com/normegil/evevulcan/internal/model"
 	"net/url"
 )
-
-type SSO struct {
-	DomainName  string
-	Client      config.ClientAuth
-	RedirectURL url.URL
-}
 
 type API struct {
 	BaseURL url.URL

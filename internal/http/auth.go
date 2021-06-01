@@ -29,18 +29,9 @@ func (a *authHandler) login(w http.ResponseWriter, r *http.Request) {
 func (a *authHandler) callback(w http.ResponseWriter, r *http.Request) {
 	code := r.URL.Query()["code"][0]
 
-	identity, accessToken, err := a.EveAPI.RequestIdentity(code)
+	identity, err := a.EveAPI.RequestIdentity(code)
 	if err != nil {
 		a.ErrorHandler.Handle(w, fmt.Errorf("requesting identity: %w", err))
-		return
-	}
-
-	if err = a.DB.InsertOrUpdateIdentity(*identity); nil != err {
-		a.ErrorHandler.Handle(w, fmt.Errorf("inserting loaded identity: %w", err))
-		return
-	}
-	if err = a.DB.ReplaceAccessToken(*accessToken); err != nil {
-		a.ErrorHandler.Handle(w, fmt.Errorf("replacing access token: %w", err))
 		return
 	}
 
