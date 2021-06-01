@@ -38,6 +38,9 @@ func (c AuthentifiedCharacter) Blueprints() ([]model.APIBlueprint, error) {
 		if err != nil {
 			return nil, fmt.Errorf("execute request: %w", err)
 		}
+		if resp.StatusCode >= 300 {
+			return nil, fmt.Errorf("wrong response code '%d'", resp.StatusCode)
+		}
 		data, err = io.ReadAll(resp.Body)
 		if err != nil {
 			return nil, fmt.Errorf("reading response body: %w", err)

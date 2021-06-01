@@ -8,12 +8,12 @@ import (
 	"net/http"
 )
 
-type Character struct {
+type CharactersHandler struct {
 	API          eveapi.API
 	ErrorHandler ErrorHandler
 }
 
-func (c Character) Blueprints(w http.ResponseWriter, r *http.Request) {
+func (c CharactersHandler) blueprints(w http.ResponseWriter, r *http.Request) {
 	identityInterface := r.Context().Value(KeyIdentity)
 	identity := identityInterface.(*model.Identity)
 	if model.IdentityAnonymous().ID == identity.ID {
@@ -23,7 +23,7 @@ func (c Character) Blueprints(w http.ResponseWriter, r *http.Request) {
 
 	blueprints, err := c.API.WithAuthentification(*identity).Character().Blueprints()
 	if err != nil {
-		c.ErrorHandler.Handle(w, fmt.Errorf("requesting blueprints for '%s': %w", identity.ID, err))
+		c.ErrorHandler.Handle(w, fmt.Errorf("requesting blueprints for '%d': %w", identity.ID, err))
 		return
 	}
 

@@ -11,14 +11,14 @@ import (
 
 type authHandler struct {
 	AppBaseURL     url.URL
-	EveAPI         eveapi.SSO
+	EveSSO         eveapi.SSO
 	ErrorHandler   ErrorHandler
 	DB             *db.DB
 	SessionManager *scs.SessionManager
 }
 
 func (a *authHandler) login(w http.ResponseWriter, r *http.Request) {
-	loginURL, err := a.EveAPI.LoginURL()
+	loginURL, err := a.EveSSO.LoginURL()
 	if err != nil {
 		a.ErrorHandler.Handle(w, err)
 		return
@@ -29,7 +29,7 @@ func (a *authHandler) login(w http.ResponseWriter, r *http.Request) {
 func (a *authHandler) callback(w http.ResponseWriter, r *http.Request) {
 	code := r.URL.Query()["code"][0]
 
-	identity, err := a.EveAPI.RequestIdentity(code)
+	identity, err := a.EveSSO.RequestIdentity(code)
 	if err != nil {
 		a.ErrorHandler.Handle(w, fmt.Errorf("requesting identity: %w", err))
 		return

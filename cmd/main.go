@@ -39,6 +39,7 @@ func main() {
 		DomainName:  config.EveSSODomainName(),
 		Client:      config.EveSSOClientAuth(),
 		RedirectURL: *config.EveSSORedirectURL(),
+		DB:          dbInstance,
 	}
 
 	sessionManager := scs.New()
