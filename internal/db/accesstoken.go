@@ -8,10 +8,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-const accessTokenCollection = "access_tokens"
-
 func (d *DB) AccessToken(characterID int64) (*model.StoredAccessToken, error) {
-	tokenCol := d.database.Collection(accessTokenCollection)
+	tokenCol := d.database.Collection(collectionNameAccessToken)
 	var token model.StoredAccessToken
 	if err := tokenCol.FindOne(context.Background(), bson.M{"character_id": characterID}).Decode(&token); nil != err {
 		if err == mongo.ErrNoDocuments {
@@ -23,7 +21,7 @@ func (d *DB) AccessToken(characterID int64) (*model.StoredAccessToken, error) {
 }
 
 func (d *DB) ReplaceAccessToken(token model.StoredAccessToken) error {
-	tokenCol := d.database.Collection(accessTokenCollection)
+	tokenCol := d.database.Collection(collectionNameAccessToken)
 	if _, err := tokenCol.DeleteOne(context.Background(), bson.M{"character_id": token.CharacterID}); nil != err {
 		return fmt.Errorf("delete access token for %d: %w", token.CharacterID, err)
 	}

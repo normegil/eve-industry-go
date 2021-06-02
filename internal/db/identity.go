@@ -9,7 +9,7 @@ import (
 )
 
 func (d DB) LoadIdentity(id int64) (*model.Identity, error) {
-	identitiesCol := d.database.Collection("identities")
+	identitiesCol := d.database.Collection(collectionNameIdentities)
 	var found model.Identity
 	err := identitiesCol.FindOne(context.Background(), bson.M{"id": id}).Decode(&found)
 	if nil != err && mongo.ErrNoDocuments != err {
@@ -22,7 +22,7 @@ func (d DB) LoadIdentity(id int64) (*model.Identity, error) {
 }
 
 func (d *DB) InsertOrUpdateIdentity(identity model.Identity) error {
-	identitiesCol := d.database.Collection("identities")
+	identitiesCol := d.database.Collection(collectionNameIdentities)
 
 	loadedIdentity, err := d.LoadIdentity(identity.ID)
 	if err != nil {

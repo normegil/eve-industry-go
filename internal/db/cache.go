@@ -8,8 +8,6 @@ import (
 	"time"
 )
 
-const cacheCollectionName = "api-cache"
-
 type APICacheObject struct {
 	QueryID    string    `bson:"query_id"`
 	Expiration time.Time `bson:"expiration"`
@@ -17,7 +15,7 @@ type APICacheObject struct {
 }
 
 func (d *DB) FromCache(queryId string) ([]byte, error) {
-	cacheCol := d.database.Collection(cacheCollectionName)
+	cacheCol := d.database.Collection(collectionNameCache)
 	var obj APICacheObject
 	err := cacheCol.FindOne(context.Background(), bson.M{"query_id": queryId}).Decode(&obj)
 	if err != nil {
@@ -30,7 +28,7 @@ func (d *DB) FromCache(queryId string) ([]byte, error) {
 }
 
 func (d *DB) ToCache(obj APICacheObject) error {
-	cacheCol := d.database.Collection(cacheCollectionName)
+	cacheCol := d.database.Collection(collectionNameCache)
 	if _, err := cacheCol.InsertOne(context.Background(), obj); nil != err {
 		return fmt.Errorf("inserting into cache '%s': %w", obj.QueryID, err)
 	}

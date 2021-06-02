@@ -35,6 +35,10 @@ func main() {
 	mongoDatabase := client.Database("eve-vulcan")
 
 	dbInstance := db.New(mongoDatabase)
+	if err = dbInstance.CreateIndexes(); nil != err {
+		panic(err)
+	}
+
 	api := eveapi.SSO{
 		DomainName:  config.EveSSODomainName(),
 		Client:      config.EveSSOClientAuth(),

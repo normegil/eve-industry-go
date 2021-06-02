@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 type SSO struct {
@@ -64,7 +65,7 @@ func (s SSO) RequestIdentity(code string) (*model.Identity, error) {
 	accessToken := &model.StoredAccessToken{
 		CharacterID: identity.CharacterID,
 		AccessToken: tokens.AccessToken,
-		ExpiresIn:   tokens.ExpiresIn,
+		Created:     time.Now(),
 	}
 	if err = s.DB.ReplaceAccessToken(*accessToken); nil != err {
 		return nil, fmt.Errorf("replacing access token: %w", err)
@@ -92,7 +93,7 @@ func (s SSO) requestNewAccessToken(characterID int64, refreshToken string) (stri
 	if err != nil {
 		return "", fmt.Errorf("requesting new access token: %w", err)
 	}
-	if err = s.DB.ReplaceAccessToken(model.StoredAccessToken{CharacterID: characterID, AccessToken: tokens.AccessToken, ExpiresIn: tokens.ExpiresIn}); nil != err {
+	if err = s.DB.ReplaceAccessToken(model.StoredAccessToken{CharacterID: characterID, AccessToken: tokens.AccessToken, Created: time.Now()}); nil != err {
 		return "", fmt.Errorf("could not store access token in cache: %w", err)
 	}
 	return tokens.AccessToken, nil

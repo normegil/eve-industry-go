@@ -18,6 +18,8 @@ type AuthentifiedCharacter struct {
 	RefreshToken string
 }
 
+const cacheExpirationBlueprints = 5 * time.Minute
+
 func (c AuthentifiedCharacter) Blueprints() ([]model.APIBlueprint, error) {
 	queryId := "character-blueprints-" + strconv.FormatInt(c.CharacterID, 10)
 	data, err := c.DB.FromCache(queryId)
@@ -45,7 +47,7 @@ func (c AuthentifiedCharacter) Blueprints() ([]model.APIBlueprint, error) {
 		if err != nil {
 			return nil, fmt.Errorf("reading response body: %w", err)
 		}
-		if err := c.DB.ToCache(db.APICacheObject{QueryID: queryId, Expiration: time.Time{}, Object: data}); nil != err {
+		if err := c.DB.ToCache(db.APICacheObject{QueryID: queryId, Expiration: time.Now().Add(cacheExpirationBlueprints), Object: data}); nil != err {
 			return nil, fmt.Errorf("saving response into cache: %w", err)
 		}
 	}
