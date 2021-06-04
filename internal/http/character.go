@@ -3,13 +3,13 @@ package http
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/normegil/evevulcan/internal/eveapi"
+	"github.com/normegil/evevulcan/internal/dao"
 	"github.com/normegil/evevulcan/internal/model"
 	"net/http"
 )
 
 type CharactersHandler struct {
-	API          eveapi.API
+	CharacterDAO dao.Character
 	ErrorHandler ErrorHandler
 }
 
@@ -21,7 +21,7 @@ func (c CharactersHandler) blueprints(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	blueprints, err := c.API.WithAuthentification(*identity).Character().Blueprints()
+	blueprints, err := c.CharacterDAO.Blueprints(*identity)
 	if err != nil {
 		c.ErrorHandler.Handle(w, fmt.Errorf("requesting blueprints for '%d': %w", identity.ID, err))
 		return

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-chi/chi/v5"
+	"github.com/normegil/evevulcan/internal/dao"
 	"github.com/normegil/evevulcan/internal/db"
 	"github.com/normegil/evevulcan/internal/eveapi"
 	"net/http"
@@ -23,6 +24,7 @@ func Routes(appBaseURL url.URL, frontend http.FileSystem, database *db.DB, sso e
 		SSO:     sso,
 		DB:      database,
 	}
+	daos := dao.DAOs{API: api}
 
 	auth := &authHandler{
 		AppBaseURL:     appBaseURL,
@@ -38,7 +40,7 @@ func Routes(appBaseURL url.URL, frontend http.FileSystem, database *db.DB, sso e
 	users := UsersHandler{ErrorHandler: errorHandler}
 	r.Get("/api/users/current", users.current)
 
-	characters := CharactersHandler{ErrorHandler: errorHandler, API: api}
+	characters := CharactersHandler{ErrorHandler: errorHandler, CharacterDAO: daos.Character()}
 	r.Get("/api/characters/blueprints", characters.blueprints)
 
 	r.Mount("/", http.FileServer(&vueFileSystem{FileSystem: frontend}))
