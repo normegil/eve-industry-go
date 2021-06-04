@@ -53,7 +53,7 @@ export default {
   data() {
     return {
       isLoad: false,
-      apiBase: apiUrl + "/cakes/fordatatable",
+      apiBase: apiUrl() + "/cakes/fordatatable",
       displayMode: "list",
       sort: {
         column: "title",
