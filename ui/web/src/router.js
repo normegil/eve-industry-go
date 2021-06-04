@@ -22,7 +22,7 @@ export default function loadRoutes(store) {
                     children: [
                         {
                             path: 'myblueprints',
-                            component: () => import(/* webpackChunkName: "manufacturing" */ './views/app/manufacturing/MyBlueprints'),
+                            component: () => import(/* webpackChunkName: "manufacturing" */ './views/app/manufacturing/MyBlueprints.vue'),
                             meta: {roles: [UserRole.User]},
                         }
                     ]
