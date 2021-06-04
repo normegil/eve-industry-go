@@ -10,11 +10,11 @@ import (
 )
 
 type authHandler struct {
-	AppBaseURL     url.URL
-	EveSSO         eveapi.SSO
-	ErrorHandler   ErrorHandler
-	DB             *db.DB
-	SessionManager *scs.SessionManager
+	FrontendBaseURL url.URL
+	EveSSO          eveapi.SSO
+	ErrorHandler    ErrorHandler
+	DB              *db.DB
+	SessionManager  *scs.SessionManager
 }
 
 func (a *authHandler) login(w http.ResponseWriter, r *http.Request) {
@@ -40,7 +40,7 @@ func (a *authHandler) callback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	a.SessionManager.Put(r.Context(), KeySessionIdentityID, identity.ID)
-	http.Redirect(w, r, a.AppBaseURL.String(), http.StatusFound)
+	http.Redirect(w, r, a.FrontendBaseURL.String(), http.StatusFound)
 }
 
 func (a *authHandler) signout(w http.ResponseWriter, r *http.Request) {

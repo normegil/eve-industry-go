@@ -1,4 +1,5 @@
 import axios from "axios";
+import {apiUrl} from "../../constants/config";
 import {toRole} from "../../utils/auth.roles";
 
 export default {
@@ -20,8 +21,8 @@ export default {
     actions: {
         loadCurrent: async ({commit}) => {
             try {
-                let url = window.location.origin + "/api/users/current";
-                let response = await axios.get(url);
+                let url = apiUrl() + "/api/users/current";
+                let response = await axios.get(url, {withCredentials: true});
                 response.data.role = toRole(response.data.role)
                 commit("setUser", response.data)
             } catch (e) {
@@ -32,7 +33,7 @@ export default {
         },
         signOut: async ({commit}) => {
             try {
-                let response = await axios.get(window.location.origin + "/auth/sign-out");
+                let response = await axios.get(apiUrl() + "/auth/sign-out", {withCredentials: true});
             } catch (e) {
                 console.error(e)
             }

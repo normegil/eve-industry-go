@@ -48,7 +48,8 @@ func main() {
 
 	sessionManager := scs.New()
 	sessionManager.Store = mongodbstore.New(mongoDatabase)
-	routes, err := http.Routes(*config.AppBaseURL(), webFrontend, dbInstance, api, sessionManager)
+	frontendBaseURL := *config.FrontendBaseURL()
+	routes, err := http.Routes(frontendBaseURL, webFrontend, dbInstance, api, sessionManager)
 	if err != nil {
 		panic(fmt.Errorf("load routes: %w", err))
 	}
@@ -61,6 +62,9 @@ func main() {
 	}
 	routes = sessionManager.LoadAndSave(routes)
 	routes = middleware.AnonymousUserSetter{Handler: routes}
+	if config.EnableCrossOriginHeader() {
+		routes = middleware.CrossOriginRessourceSharing{Handler: routes, Frontend: frontendBaseURL}
+	}
 	routes = middleware.RequestLogger{Handler: routes}
 
 	server := stdhttp.Server{

@@ -5,8 +5,8 @@ import (
 	"os"
 )
 
-func AppBaseURL() *url.URL {
-	baseURL, err := url.Parse(os.Getenv(appPrefix + "URL"))
+func FrontendBaseURL() *url.URL {
+	baseURL, err := url.Parse(os.Getenv(appPrefix + "URL_FRONTEND"))
 	if err != nil {
 		panic(err)
 	}

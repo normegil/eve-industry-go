@@ -11,7 +11,7 @@ import (
 	"net/url"
 )
 
-func Routes(appBaseURL url.URL, frontend http.FileSystem, database *db.DB, sso eveapi.SSO, sessionManager *scs.SessionManager) (http.Handler, error) {
+func Routes(frontendBaseURL url.URL, frontend http.FileSystem, database *db.DB, sso eveapi.SSO, sessionManager *scs.SessionManager) (http.Handler, error) {
 	r := chi.NewRouter()
 
 	errorHandler := ErrorHandler{}
@@ -27,11 +27,11 @@ func Routes(appBaseURL url.URL, frontend http.FileSystem, database *db.DB, sso e
 	daos := dao.DAOs{API: api}
 
 	auth := &authHandler{
-		AppBaseURL:     appBaseURL,
-		EveSSO:         sso,
-		ErrorHandler:   errorHandler,
-		DB:             database,
-		SessionManager: sessionManager,
+		FrontendBaseURL: frontendBaseURL,
+		EveSSO:          sso,
+		ErrorHandler:    errorHandler,
+		DB:              database,
+		SessionManager:  sessionManager,
 	}
 	r.Get("/auth/login", auth.login)
 	r.Get("/auth/callback", auth.callback)
