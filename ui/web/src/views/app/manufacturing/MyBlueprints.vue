@@ -53,7 +53,7 @@ export default {
   data() {
     return {
       isLoad: false,
-      apiBase: apiUrl() + "/cakes/fordatatable",
+      apiBase: apiUrl() + "/api/characters/blueprints",
       displayMode: "list",
       sort: {
         column: "title",
@@ -75,7 +75,7 @@ export default {
       this.isLoad = false;
 
       axios
-        .get(this.apiUrl)
+        .get(this.apiUrl, {withCredentials: true})
         .then(response => {
           return response.data;
         })
@@ -86,7 +86,6 @@ export default {
           this.items = res.data.map(x => {
             return {
               ...x,
-              img: x.img.replace("/img/", "/img/products/")
             };
           });
           this.perPage = res.per_page;
