@@ -113,8 +113,8 @@ import {
   DataListIcon,
   ThumbListIcon,
   ImageListIcon
-} from "../../components/Svg";
-import AddNewModal from "./AddNewModal";
+} from "../../../components/Svg";
+import AddNewModal from "../AddNewModal";
 
 export default {
   components: {
