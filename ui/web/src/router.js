@@ -18,12 +18,25 @@ export default function loadRoutes(store) {
                     path: "manufacturing",
                     component: () =>
                         import(/* webpackChunkName: "manufacturing" */ "./views/app/manufacturing"),
-                    redirect: `${adminRoot}/manufacturing/myblueprints`,
+                    redirect: `${adminRoot}/manufacturing/blueprints/my`,
                     children: [
                         {
-                            path: 'myblueprints',
-                            component: () => import(/* webpackChunkName: "manufacturing" */ './views/app/manufacturing/MyBlueprints.vue'),
+                            path: 'blueprints',
+                            component: () =>
+                                import(/* webpackChunkName: "manufacturing" */ "./views/app/manufacturing"),
                             meta: {roles: [UserRole.User]},
+                            children: [
+                                {
+                                    path: 'my',
+                                    component: () => import(/* webpackChunkName: "manufacturing" */ './views/app/manufacturing/MyBlueprints.vue'),
+                                    meta: {roles: [UserRole.User]},
+                                },
+                                {
+                                    path: ':id',
+                                    component: () => import(/* webpackChunkName: "manufacturing" */ './views/app/manufacturing/BlueprintsDetails.vue'),
+                                    meta: {roles: [UserRole.User]},
+                                }
+                            ]
                         }
                     ]
                 },

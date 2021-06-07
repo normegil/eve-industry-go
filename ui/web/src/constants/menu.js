@@ -10,7 +10,7 @@ const data = [{
   subs: [{
     icon: "iconsminds-files",
     label: "menu.myblueprints",
-    to: `${adminRoot}/manufacturing/myblueprints`,
+    to: `${adminRoot}/manufacturing/blueprints/my`,
   },
   ]
 },
