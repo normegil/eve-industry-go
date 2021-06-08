@@ -42,6 +42,7 @@ func Routes(frontendBaseURL url.URL, frontend http.FileSystem, database *db.DB, 
 
 	characters := CharactersHandler{ErrorHandler: errorHandler, CharacterDAO: daos.Character()}
 	r.Get("/api/characters/blueprints", characters.blueprints)
+	r.Get("/api/characters/blueprints/owned/{itemID}", characters.ownedBlueprint)
 
 	r.Mount("/", http.FileServer(&vueFileSystem{FileSystem: frontend}))
 

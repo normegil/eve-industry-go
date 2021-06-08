@@ -2,21 +2,21 @@
   <div>
     <b-row>
       <b-colxx xxs="12">
-        <h1>Chocolate Cake</h1>
+        <h1>{{ name }}</h1>
         <div class="top-right-button-container">
           <b-dropdown
-            id="ddown5"
-            :text="$t('pages.actions')"
-            size="lg"
-            variant="outline-primary"
-            class="top-right-button top-right-button-single"
-            no-fade="true"
+              id="ddown5"
+              :text="$t('pages.actions')"
+              size="lg"
+              variant="outline-primary"
+              class="top-right-button top-right-button-single"
+              no-fade="true"
           >
             <b-dropdown-item>{{ $t('dashboards.last-week') }}</b-dropdown-item>
             <b-dropdown-item>{{ $t('dashboards.this-month') }}</b-dropdown-item>
           </b-dropdown>
         </div>
-        <piaf-breadcrumb />
+        <piaf-breadcrumb/>
         <b-tabs nav-class="separator-tabs ml-0 mb-5" content-class="tab-content" :no-fade="true">
           <b-tab :title="$t('pages.details')">
             <b-row>
@@ -24,10 +24,10 @@
                 <b-card class="mb-4" no-body>
                   <div class="position-absolute card-top-buttons">
                     <b-button variant="outline-white" class="icon-button">
-                      <i class="simple-icon-pencil" />
+                      <i class="simple-icon-pencil"/>
                     </b-button>
                   </div>
-                  <img src="/assets/img/details/1.jpg" alt="Detail" class="card-img-top" />
+                  <img src="/assets/img/details/1.jpg" alt="Detail" class="card-img-top"/>
                   <b-card-body>
                     <p class="text-muted text-small mb-2">{{ $t('pages.description') }}</p>
                     <p class="mb-3">
@@ -35,8 +35,8 @@
                       exclusively brings you the classic chocolate cake.
                       This cake is the one you always dream of-moist cake
                       and creamy chocolate frosting.
-                      <br />
-                      <br />This cake proudly serves itself for a family
+                      <br/>
+                      <br/>This cake proudly serves itself for a family
                       gathering, a dinner party, a birthday celebration, a
                       baby christening, and a gift to someone special or
                       simply to have on hand on the cake stand at home
@@ -65,16 +65,16 @@
                   </b-card-body>
                 </b-card>
                 <radial-progress-card
-                  :title="$t('pages.order-status')"
-                  :percent="85"
-                  no-suffle
-                  class="mb-4"
+                    :title="$t('pages.order-status')"
+                    :percent="85"
+                    no-suffle
+                    class="mb-4"
                 />
                 <radial-progress-card
-                  :title="$t('pages.bake-progress')"
-                  :percent="40"
-                  no-suffle
-                  class="mb-4"
+                    :title="$t('pages.bake-progress')"
+                    :percent="40"
+                    no-suffle
+                    class="mb-4"
                 />
               </b-colxx>
               <b-colxx xxs="12" lg="8">
@@ -82,10 +82,10 @@
                 <website-visit-chart-card class="mb-4"></website-visit-chart-card>
                 <b-card class="mb-4" :title="$t('pages.comments')">
                   <comment-item
-                    v-for="(comment,index) in comments"
-                    :key="index"
-                    :data="comment"
-                    detail-path="#"
+                      v-for="(comment,index) in comments"
+                      :key="index"
+                      :data="comment"
+                      detail-path="#"
                   />
                 </b-card>
               </b-colxx>
@@ -95,10 +95,10 @@
             <b-row>
               <b-colxx>
                 <order-item
-                  v-for="(order,index) in orders"
-                  :key="index"
-                  :data="order"
-                  detail-path="#"
+                    v-for="(order,index) in orders"
+                    :key="index"
+                    :data="order"
+                    detail-path="#"
                 />
               </b-colxx>
             </b-row>
@@ -114,10 +114,12 @@ import Stars from "../../../components/Common/Stars";
 import RadialProgressCard from "../../../components/Cards/RadialProgressCard";
 import CommentItem from "../../../components/Listing/CommentItem";
 import OrderItem from "../../../components/Listing/OrderItem";
-import { comments } from "../../../data/comments";
+import {comments} from "../../../data/comments";
 import orders from "../../../data/orders";
 import SmallLineCharts from "../../../containers/dashboards/SmallLineCharts";
 import WebsiteVisitsChartCard from "../../../containers/dashboards/WebsiteVisitsChartCard";
+import axios from "axios";
+import { apiUrl } from "../../../constants/config";
 
 export default {
   components: {
@@ -131,15 +133,34 @@ export default {
   data() {
     return {
       isLoad: false,
+      apiBase: apiUrl() + "/api/characters/blueprints/owned",
+      name: "",
       comments: comments.slice(0, 5),
       orders
     };
   },
-  methods: {},
+  methods: {
+    loadItem() {
+      this.isLoad = false
+
+      axios
+          .get(this.apiUrl, {withCredentials: true})
+          .then(response => {
+            return response.data;
+          })
+          .then(res => {
+            this.name = res.type.name;
+            this.isLoad = true;
+          });
+    }
+  },
   mounted() {
-    setTimeout(() => {
-      this.isLoad = true;
-    }, 50);
+    this.loadItem()
+  },
+  computed: {
+    apiUrl() {
+      return `${this.apiBase}/${this.$route.params.id}`;
+    }
   }
 };
 </script>

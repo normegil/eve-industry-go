@@ -120,6 +120,8 @@
     "market": "Market",
     "settings": "Settings",
     "myblueprints": "My Blueprints",
+    "blueprints": "Blueprints",
+    "my": "Owned",
     "single": "Single"
   },
   "dashboards": {

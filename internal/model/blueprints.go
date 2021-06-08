@@ -8,3 +8,7 @@ type Blueprint struct {
 	Runs               int   `json:"runs"`
 	Type               Type  `json:"type"`
 }
+
+type BlueprintWithDetails struct {
+	Blueprint
+}
